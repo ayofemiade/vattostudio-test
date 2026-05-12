@@ -29,9 +29,9 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
 
-      if (anchor && anchor.getAttribute("href")?.startsWith("#")) {
+      if (anchor) {
         const id = anchor.getAttribute("href");
-        if (id === "#") return;
+        if (!id || id === "#" || !id.startsWith("#")) return;
 
         const targetElement = document.querySelector(id);
         if (targetElement) {
