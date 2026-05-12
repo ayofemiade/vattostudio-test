@@ -10,10 +10,7 @@
    ============================================================ */
 
 :root {
-  --font-bebas: 'Bebas Neue', Impact, sans-serif;
   --font-satoshi: 'Satoshi', 'General Sans', system-ui, -apple-system, sans-serif;
-  --font-ibm-plex-mono: 'IBM Plex Mono', 'Courier New', monospace;
-
   --color-bg: #0A0A0A;
   --color-gold: #C9A84C;
   --color-white: #FFFFFF;
@@ -38,11 +35,30 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {

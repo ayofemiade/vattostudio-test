@@ -1,24 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Lenis from "@studio-freight/lenis";
+import { useEffect } from "react";
+import Lenis from "lenis";
 
 interface SmoothScrollProviderProps {
   children: React.ReactNode;
 }
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
-  const lenisRef = useRef<Lenis | null>(null);
-
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
       smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
     });
-
-    lenisRef.current = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
@@ -27,7 +24,30 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
 
     requestAnimationFrame(raf);
 
+    // Handle anchor links
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest("a");
+
+      if (anchor && anchor.getAttribute("href")?.startsWith("#")) {
+        const id = anchor.getAttribute("href");
+        if (id === "#") return;
+
+        const targetElement = document.querySelector(id);
+        if (targetElement) {
+          e.preventDefault();
+          lenis.scrollTo(targetElement as HTMLElement, {
+            offset: 0,
+            duration: 1.2,
+          });
+        }
+      }
+    };
+
+    window.addEventListener("click", handleAnchorClick);
+
     return () => {
+      window.removeEventListener("click", handleAnchorClick);
       lenis.destroy();
     };
   }, []);

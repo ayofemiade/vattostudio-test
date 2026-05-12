@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
-/* IBM Plex Mono — loaded via next/font */
+/* IBM Plex Mono */
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
+
+/* Bebas Neue */
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-bebas",
   display: "swap",
 });
 
@@ -45,19 +53,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={ibmPlexMono.variable}>
+    <html lang="en" className={`${ibmPlexMono.variable} ${bebasNeue.variable}`}>
       <head>
-        {/* Bebas Neue display font */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&display=swap"
-          rel="stylesheet"
-        />
         {/* Satoshi — from Fontshare CDN */}
         <link
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"

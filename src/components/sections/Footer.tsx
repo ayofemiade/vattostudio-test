@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowUpRight, Instagram, Twitter } from "lucide-react";
 
 function FooterLogoMark() {
