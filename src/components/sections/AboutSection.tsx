@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView, useReducedMotion, useScroll, useVelocity, useSpring, useTransform } from "framer-motion";
+import Image from "next/image";
 
 const VALUES = [
   {
@@ -26,7 +27,7 @@ const VALUES = [
   },
 ];
 
-/* ─── Manifesto ticker ─── */
+/* ─── Manifesto Ticker with liquid scroll-velocity skewing ─── */
 function ManifestoTicker() {
   const words = [
     "We Reveal",
@@ -45,19 +46,27 @@ function ManifestoTicker() {
   const text = words.join("  ");
   const repeated = `${text}  ${text}  `;
 
+  /* Scroll velocity tracking */
+  const { scrollY }    = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  
+  /* Map scroll velocity to horizontal text skewing (-8deg to 8deg) */
+  const skewX          = useTransform(scrollVelocity, [-2000, 2000], [-8, 8]);
+  const skewXSpring    = useSpring(skewX, { stiffness: 90, damping: 25 });
+
   return (
     <div
       style={{
         overflow:     "hidden",
-        borderTop:    "1px solid rgba(30,30,30,0.7)",
-        borderBottom: "1px solid rgba(30,30,30,0.7)",
+        borderTop:    "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
         padding:      "1.125rem 0",
         margin:       "clamp(3.5rem, 7vh, 6rem) 0",
         position:     "relative",
       }}
       aria-hidden="true"
     >
-      {/* Left + right fade */}
+      {/* Left + right fade overlays */}
       <div
         style={{
           position:   "absolute",
@@ -79,6 +88,7 @@ function ManifestoTicker() {
           color:      "transparent",
           WebkitTextStroke: "1px rgba(136,136,128,0.35)",
           gap:        "0",
+          skewX:      skewXSpring,
         }}
       >
         {repeated}
@@ -91,59 +101,65 @@ function ManifestoTicker() {
   );
 }
 
-/* ─── Value card ─── */
+/* ─── Premium Value Card with active React-Motion hover reveals ─── */
 function ValueCard({ value, index, isInView }: {
   value: typeof VALUES[0];
   index: number;
   isInView: boolean;
 }) {
   const prefersReducedMotion = useReducedMotion();
+  const [hovered, setHovered] = useState(false);
 
   return (
     <motion.div
       initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: 0.1 + index * 0.1, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ delay: 0.1 + index * 0.12, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         padding:    "clamp(1.75rem, 3vw, 2.5rem)",
-        borderTop:  "1px solid rgba(30,30,30,0.7)",
+        borderTop:  "1px solid rgba(255,255,255,0.06)",
         position:   "relative",
         overflow:   "hidden",
+        background: hovered ? "rgba(201,168,76,0.02)" : "transparent",
         transition: "background 0.45s var(--ease-cinematic)",
       }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,0.03)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.background = "transparent";
-      }}
     >
-      {/* Gold accent line — top */}
-      <div
+      {/* Top accent line sliding horizontal reveal */}
+      <motion.div
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
           position:   "absolute",
           top:        0,
           left:       0,
-          width:      "0%",
           height:     "1px",
           background: "var(--color-gold)",
-          transition: "width 0.5s var(--ease-cinematic)",
         }}
-        className="value-accent-line"
       />
-      <style>{`
-        div:hover > .value-accent-line { width: 100% !important; }
-      `}</style>
 
-      {/* Number + title */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: "0.875rem", marginBottom: "1.25rem" }}>
+      {/* Index Number + Title with micro translations */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          gap: "0.875rem",
+          marginBottom: "1.25rem",
+          transform: hovered ? "translateY(-2px)" : "translateY(0px)",
+          transition: "transform 0.4s var(--ease-cinematic)",
+        }}
+      >
         <span
           style={{
             fontFamily:    "var(--font-ibm-plex-mono)",
             fontSize:      "0.5625rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color:         "var(--color-gold)",
+            color:         hovered ? "var(--color-gold)" : "var(--color-dim)",
+            transform:     hovered ? "translateX(4px)" : "translateX(0px)",
+            transition:    "all 0.4s var(--ease-cinematic)",
+            display:       "inline-block",
           }}
         >
           {value.label}
@@ -166,7 +182,9 @@ function ValueCard({ value, index, isInView }: {
           fontFamily: "var(--font-satoshi)",
           fontSize:   "clamp(0.9rem, 1.2vw, 1rem)",
           lineHeight: 1.7,
-          color:      "var(--color-dim)",
+          color:      hovered ? "rgba(255,255,255,0.75)" : "var(--color-dim)",
+          transform:  hovered ? "translateY(-1px)" : "translateY(0px)",
+          transition: "all 0.4s var(--ease-cinematic)",
         }}
       >
         {value.body}
@@ -176,13 +194,13 @@ function ValueCard({ value, index, isInView }: {
 }
 
 /* ═══════════════════════════════════════════
-   ABOUT SECTION
+   ABOUT COMPONENT (THE STUDIO)
    ═══════════════════════════════════════════ */
 export function AboutSection() {
-  const headingRef       = useRef<HTMLDivElement>(null);
-  const valuesRef        = useRef<HTMLDivElement>(null);
-  const isHeadingInView  = useInView(headingRef, { once: true, margin: "-12%" });
-  const isValuesInView   = useInView(valuesRef,  { once: true, margin: "-8%"  });
+  const headingRef           = useRef<HTMLDivElement>(null);
+  const valuesRef            = useRef<HTMLDivElement>(null);
+  const isHeadingInView      = useInView(headingRef, { once: true, margin: "-12%" });
+  const isValuesInView       = useInView(valuesRef,  { once: true, margin: "-8%"  });
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -192,7 +210,7 @@ export function AboutSection() {
       style={{
         padding:    "clamp(6rem, 11vh, 10rem) 0",
         background: "var(--color-bg)",
-        borderTop:  "1px solid rgba(30,30,30,0.6)",
+        borderTop:  "1px solid rgba(255,255,255,0.06)",
         position:   "relative",
         overflow:   "hidden",
       }}
@@ -218,7 +236,7 @@ export function AboutSection() {
           padding:  "0 clamp(1.25rem, 5vw, 3rem)",
         }}
       >
-        {/* Top grid */}
+        {/* Top grid: Headline + body copy */}
         <div
           ref={headingRef}
           style={{
@@ -228,48 +246,89 @@ export function AboutSection() {
           }}
           className="md:grid-cols-2"
         >
-          {/* Left — headline */}
-          <div>
-            <motion.div
-              initial={prefersReducedMotion ? {} : { opacity: 0, y: 16 }}
-              animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.75rem" }}
-            >
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={isHeadingInView ? { scaleX: 1 } : {}}
-                transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-                style={{ display: "block", width: "28px", height: "1px", background: "var(--color-gold)", transformOrigin: "left" }}
-              />
-              <span className="label-gold">The Studio</span>
-            </motion.div>
-
-            <div style={{ overflow: "hidden" }}>
-              <motion.h2
-                initial={prefersReducedMotion ? {} : { clipPath: "inset(100% 0 0 0)", y: 20 }}
-                animate={isHeadingInView ? { clipPath: "inset(0% 0 0 0)", y: 0 } : {}}
-                transition={{ delay: 0.1, duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
-                style={{
-                  fontFamily:    "var(--font-bebas)",
-                  fontSize:      "clamp(3rem, 7vw, 7rem)",
-                  letterSpacing: "0.01em",
-                  lineHeight:    0.92,
-                  color:         "var(--color-white)",
-                }}
+          {/* Left Column — Headline & Lagos Worldwide Graphic */}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div>
+              <motion.div
+                initial={prefersReducedMotion ? {} : { opacity: 0, y: 16 }}
+                animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6 }}
+                style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.75rem" }}
               >
-                Built From
-                <br />
-                Lagos.
-                <br />
-                <span style={{ color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.28)" }}>
-                  Felt Worldwide.
-                </span>
-              </motion.h2>
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={isHeadingInView ? { scaleX: 1 } : {}}
+                  transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                  style={{ display: "block", width: "28px", height: "1px", background: "var(--color-gold)", transformOrigin: "left" }}
+                />
+                <span className="label-gold">The Studio</span>
+              </motion.div>
+
+              <div style={{ overflow: "hidden" }}>
+                <motion.h2
+                  initial={prefersReducedMotion ? {} : { clipPath: "inset(100% 0 0 0)", y: 20 }}
+                  animate={isHeadingInView ? { clipPath: "inset(0% 0 0 0)", y: 0 } : {}}
+                  transition={{ delay: 0.1, duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
+                  style={{
+                    fontFamily:    "var(--font-bebas)",
+                    fontSize:      "clamp(3.5rem, 7vw, 7rem)",
+                    letterSpacing: "0.01em",
+                    lineHeight:    0.92,
+                    color:         "var(--color-white)",
+                  }}
+                >
+                  Built From Lagos.
+                  <br />
+                  <span style={{ color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.28)" }}>
+                    Felt Worldwide.
+                  </span>
+                </motion.h2>
+              </div>
             </div>
+
+            {/* Lagos to Worldwide interactive visual graphic */}
+            <motion.div
+              initial={prefersReducedMotion ? {} : { opacity: 0, y: 35 }}
+              animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.28, duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{
+                marginTop: "2.5rem",
+                width: "100%",
+                aspectRatio: "16/10",
+                borderRadius: "4px",
+                border: "1px solid rgba(255,255,255,0.06)",
+                overflow: "hidden",
+                position: "relative",
+              }}
+              className="group cursor-default"
+            >
+              <Image
+                src="/lagos_worldwide.png"
+                alt="Lagos Worldwide Creative Network"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{
+                  objectFit: "cover",
+                  filter: "grayscale(10%) brightness(0.85) contrast(1.1)",
+                  transition: "transform 0.8s var(--ease-cinematic)",
+                }}
+                className="group-hover:scale-105"
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "radial-gradient(circle at center, rgba(201,168,76,0.04) 0%, transparent 70%)",
+                  opacity: 0,
+                  transition: "opacity 0.6s",
+                  pointerEvents: "none",
+                }}
+                className="group-hover:opacity-100"
+              />
+            </motion.div>
           </div>
 
-          {/* Right — body copy */}
+          {/* Right Column — Body copy + studio meta grid */}
           <motion.div
             initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
             animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}
@@ -300,15 +359,15 @@ export function AboutSection() {
               about your brand and build an undeniable world around it.
             </p>
 
-            {/* Studio meta */}
+            {/* Studio Meta Table */}
             <div
               style={{
                 display:             "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap:                 "1.25rem",
+                gap:                 "1.5rem 1.25rem",
                 marginTop:           "0.5rem",
                 paddingTop:          "1.75rem",
-                borderTop:           "1px solid rgba(30,30,30,0.7)",
+                borderTop:           "1px solid rgba(255,255,255,0.06)",
               }}
             >
               {[
@@ -346,22 +405,22 @@ export function AboutSection() {
           </motion.div>
         </div>
 
-        {/* Manifesto ticker */}
+        {/* Dynamic velocity-skewed ticker */}
         <ManifestoTicker />
 
-        {/* Values label */}
+        {/* Values Section Header */}
         <motion.div
           ref={valuesRef}
           initial={prefersReducedMotion ? {} : { opacity: 0, y: 16 }}
           animate={isValuesInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0" }}
+          style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}
         >
           <span style={{ display: "block", width: "28px", height: "1px", background: "var(--color-gold)" }} />
           <span className="label-gold">What We Stand For</span>
         </motion.div>
 
-        {/* Values grid — editorial */}
+        {/* Asymmetric value bento grid */}
         <div
           style={{
             display:             "grid",

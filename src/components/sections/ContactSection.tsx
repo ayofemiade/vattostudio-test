@@ -28,11 +28,11 @@ export function ContactSection() {
     width: "100%",
     background: "transparent",
     border: "none",
-    borderBottom: `1px solid ${focused === field ? "var(--color-gold)" : "var(--color-border)"}`,
+    borderBottom: `1px solid ${focused === field ? "var(--color-gold)" : "rgba(10,10,10,0.15)"}`,
     padding: "1rem 0",
     fontFamily: "var(--font-satoshi)",
     fontSize: "1rem",
-    color: "var(--color-white)",
+    color: "var(--color-bg)",
     outline: "none",
     transition: "border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
     borderRadius: 0,
@@ -55,8 +55,8 @@ export function ContactSection() {
       aria-label="Contact Vattostudio"
       style={{
         padding: "clamp(5rem, 10vh, 9rem) 0",
-        background: "var(--color-surface)",
-        borderTop: "1px solid rgba(30,30,30,0.7)",
+        background: "#FFFFFF",
+        borderTop: "1px solid rgba(0,0,0,0.06)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -105,7 +105,7 @@ export function ContactSection() {
                 fontSize: "clamp(3rem, 9vw, 8rem)",
                 letterSpacing: "0.01em",
                 lineHeight: 0.9,
-                color: "var(--color-white)",
+                color: "var(--color-bg)",
               }}
             >
               Let&apos;s Make
@@ -117,12 +117,7 @@ export function ContactSection() {
 
         {/* Two-column: form + info */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "clamp(3rem, 7vw, 7rem)",
-          }}
-          className="lg:grid-cols-[1fr_380px]"
+          className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_380px] lg:gap-24"
         >
           {/* ── Contact form ── */}
           <motion.div
@@ -181,14 +176,9 @@ export function ContactSection() {
               >
                 {/* Row 1: Name + Email */}
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "clamp(1.5rem, 4vw, 3rem)",
-                  }}
-                  className="grid-cols-1 sm:grid-cols-2"
+                  className="grid grid-cols-1 gap-8 sm:grid-cols-2"
                 >
-                  <div>
+                  <div style={{ position: "relative" }}>
                     <label htmlFor="contact-name" style={labelStyle}>Name</label>
                     <input
                       id="contact-name"
@@ -201,8 +191,22 @@ export function ContactSection() {
                       onBlur={() => setFocused(null)}
                       style={{ ...inputStyle("name"), caretColor: "var(--color-gold)" }}
                     />
+                    <motion.div
+                      animate={{ scaleX: focused === "name" ? 1 : 0 }}
+                      transition={{ duration: 0.4, ease: "easeInOut" }}
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: "1px",
+                        background: "var(--color-gold)",
+                        transformOrigin: "left",
+                        pointerEvents: "none",
+                      }}
+                    />
                   </div>
-                  <div>
+                  <div style={{ position: "relative" }}>
                     <label htmlFor="contact-email" style={labelStyle}>Email</label>
                     <input
                       id="contact-email"
@@ -215,11 +219,25 @@ export function ContactSection() {
                       onBlur={() => setFocused(null)}
                       style={{ ...inputStyle("email"), caretColor: "var(--color-gold)" }}
                     />
+                    <motion.div
+                      animate={{ scaleX: focused === "email" ? 1 : 0 }}
+                      transition={{ duration: 0.4, ease: "easeInOut" }}
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: "1px",
+                        background: "var(--color-gold)",
+                        transformOrigin: "left",
+                        pointerEvents: "none",
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Project type */}
-                <div>
+                <div style={{ position: "relative" }}>
                   <label htmlFor="contact-project" style={labelStyle}>Project Type</label>
                   <select
                     id="contact-project"
@@ -234,7 +252,7 @@ export function ContactSection() {
                       background: "transparent",
                     }}
                   >
-                    <option value="" disabled style={{ background: "#1A1A1A" }}>
+                    <option value="" disabled style={{ background: "#FFFFFF", color: "rgba(10,10,10,0.5)" }}>
                       Select what you need
                     </option>
                     {[
@@ -245,15 +263,29 @@ export function ContactSection() {
                       "Full Studio Retainer",
                       "Something else",
                     ].map((opt) => (
-                      <option key={opt} value={opt} style={{ background: "#1A1A1A" }}>
+                      <option key={opt} value={opt} style={{ background: "#FFFFFF", color: "#0A0A0A" }}>
                         {opt}
                       </option>
                     ))}
                   </select>
+                  <motion.div
+                    animate={{ scaleX: focused === "project" ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: "1px",
+                      background: "var(--color-gold)",
+                      transformOrigin: "left",
+                      pointerEvents: "none",
+                    }}
+                  />
                 </div>
 
                 {/* Message */}
-                <div>
+                <div style={{ position: "relative" }}>
                   <label htmlFor="contact-message" style={labelStyle}>
                     Tell us about your project
                   </label>
@@ -271,6 +303,20 @@ export function ContactSection() {
                       lineHeight: 1.7,
                     }}
                   />
+                  <motion.div
+                    animate={{ scaleX: focused === "message" ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: "1px",
+                      background: "var(--color-gold)",
+                      transformOrigin: "left",
+                      pointerEvents: "none",
+                    }}
+                  />
                 </div>
 
                 {/* Submit */}
@@ -286,24 +332,24 @@ export function ContactSection() {
                       fontSize: "0.6875rem",
                       letterSpacing: "0.2em",
                       textTransform: "uppercase",
-                      color: "var(--color-bg)",
-                      background: "var(--color-gold)",
+                      color: "var(--color-white)",
+                      background: "var(--color-bg)",
                       padding: "1.1rem 2.5rem",
                       borderRadius: "2px",
-                      border: "1px solid var(--color-gold)",
-                      cursor: "none",
+                      border: "1px solid var(--color-bg)",
+                      cursor: "pointer",
                       transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                     }}
                     onMouseEnter={(e) => {
                       const el = e.currentTarget;
                       el.style.background = "transparent";
-                      el.style.color = "var(--color-gold)";
+                      el.style.color = "var(--color-bg)";
                       el.style.transform = "translateY(-2px)";
                     }}
                     onMouseLeave={(e) => {
                       const el = e.currentTarget;
-                      el.style.background = "var(--color-gold)";
-                      el.style.color = "var(--color-bg)";
+                      el.style.background = "var(--color-bg)";
+                      el.style.color = "var(--color-white)";
                       el.style.transform = "translateY(0)";
                     }}
                   >
@@ -334,11 +380,11 @@ export function ContactSection() {
                   gap: "0.5rem",
                   fontFamily: "var(--font-satoshi)",
                   fontSize: "clamp(0.9rem, 1.3vw, 1.0625rem)",
-                  color: "var(--color-white)",
+                  color: "var(--color-bg)",
                   transition: "color 0.3s",
                 }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--color-gold)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--color-white)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--color-bg)"; }}
               >
                 <Mail size={14} strokeWidth={1.5} style={{ color: "var(--color-gold)" }} />
                 hello@vattostudio.com
@@ -355,7 +401,7 @@ export function ContactSection() {
                   gap: "0.5rem",
                   fontFamily: "var(--font-satoshi)",
                   fontSize: "clamp(0.9rem, 1.3vw, 1.0625rem)",
-                  color: "var(--color-white)",
+                  color: "var(--color-bg)",
                 }}
               >
                 <MapPin size={14} strokeWidth={1.5} style={{ color: "var(--color-gold)" }} />
@@ -383,7 +429,13 @@ export function ContactSection() {
                 borderRadius: "3px",
               }}
             >
-              <p className="label-gold" style={{ marginBottom: "0.75rem" }}>Response Time</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-gold)] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-gold)]"></span>
+                </span>
+                <p className="label-gold" style={{ margin: 0 }}>Response Time</p>
+              </div>
               <p
                 style={{
                   fontFamily: "var(--font-satoshi)",
@@ -420,8 +472,8 @@ export function ContactSection() {
                       width: "40px",
                       height: "40px",
                       borderRadius: "50%",
-                      border: "1px solid var(--color-border)",
-                      color: "var(--color-dim)",
+                      border: "1px solid rgba(10,10,10,0.15)",
+                      color: "rgba(10,10,10,0.6)",
                       transition: "all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                     }}
                     onMouseEnter={(e) => {
@@ -432,8 +484,8 @@ export function ContactSection() {
                     }}
                     onMouseLeave={(e) => {
                       const el = e.currentTarget;
-                      el.style.borderColor = "var(--color-border)";
-                      el.style.color = "var(--color-dim)";
+                      el.style.borderColor = "rgba(10,10,10,0.15)";
+                      el.style.color = "rgba(10,10,10,0.6)";
                       el.style.transform = "translateY(0)";
                     }}
                   >

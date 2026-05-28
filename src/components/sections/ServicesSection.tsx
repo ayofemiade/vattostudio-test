@@ -62,7 +62,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
         alignItems:      "center",
         gap:             "clamp(1.5rem, 3vw, 3.5rem)",
         padding:         "clamp(2.5rem, 5vh, 4rem) clamp(1rem, 3vw, 2.5rem)",
-        borderBottom:    `1px solid rgba(255,255,255,0.06)`,
+        borderBottom:    `1px solid rgba(10,10,10,0.08)`,
         cursor:          "default",
         position:        "relative",
         overflow:        "hidden",
@@ -134,7 +134,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
           fontFamily:    "var(--font-ibm-plex-mono)",
           fontSize:      "0.6875rem",
           letterSpacing: "0.1em",
-          color:         hovered ? "var(--color-gold)" : "var(--color-dim)",
+          color:         hovered ? "var(--color-gold)" : "rgba(10,10,10,0.4)",
           paddingTop:    "0.5rem",
           transition:    "color 0.35s var(--ease-cinematic)",
           position:      "relative",
@@ -151,7 +151,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
             fontFamily:    "var(--font-bebas)",
             fontSize:      "clamp(2.25rem, 4.5vw, 4.25rem)",
             letterSpacing: "0.02em",
-            color:         "var(--color-white)",
+            color:         hovered ? "var(--color-white)" : "var(--color-bg)",
             lineHeight:    1,
             marginBottom:  "0.9rem",
             transform:     hovered ? "translateX(12px)" : "translateX(0px)",
@@ -165,7 +165,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
             fontFamily: "var(--font-satoshi)",
             fontSize:   "clamp(0.875rem, 1.2vw, 1rem)",
             lineHeight: 1.75,
-            color:      hovered ? "rgba(255,255,255,0.78)" : "var(--color-dim)",
+            color:      hovered ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.55)",
             maxWidth:   "54ch",
             transform:     hovered ? "translateX(12px)" : "translateX(0px)",
             transition:    "transform 0.5s var(--ease-cinematic), color 0.4s",
@@ -196,10 +196,9 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
               fontSize:      "0.5rem",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color:         hovered ? "rgba(201,168,76,0.9)" : "var(--color-dim)",
-              background:    hovered ? "rgba(201,168,76,0.08)" : "var(--color-bg)",
-              padding:       "0.3rem 0.75rem",
-              border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "var(--color-border)"}`,
+              color:         hovered ? "rgba(201,168,76,0.9)" : "rgba(10,10,10,0.6)",
+              background:    hovered ? "rgba(201,168,76,0.08)" : "rgba(10,10,10,0.03)",
+              border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(10,10,10,0.08)"}`,
               whiteSpace:    "nowrap",
               transition:    "all 0.4s var(--ease-cinematic)",
             }}
@@ -249,7 +248,8 @@ export function ServicesSection() {
       aria-label="Our Services"
       style={{
         padding:  "clamp(6rem, 11vh, 10rem) 0",
-        background: "var(--color-surface)",
+        background: "#FFFFFF",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
         position:   "relative",
         overflow:   "hidden",
       }}
@@ -312,7 +312,7 @@ export function ServicesSection() {
                   fontSize:      "clamp(3rem, 7vw, 6.5rem)",
                   letterSpacing: "0.01em",
                   lineHeight:    0.92,
-                  color:         "var(--color-white)",
+                  color:         "var(--color-bg)",
                 }}
               >
                 Four Disciplines.
@@ -331,7 +331,7 @@ export function ServicesSection() {
               fontFamily: "var(--font-satoshi)",
               fontSize:   "clamp(0.875rem, 1.1vw, 1rem)",
               lineHeight: 1.75,
-              color:      "var(--color-dim)",
+              color:      "rgba(10, 10, 10, 0.6)",
               maxWidth:   "28ch",
               textAlign:  "right",
             }}
@@ -342,7 +342,7 @@ export function ServicesSection() {
         </div>
 
         {/* Service list */}
-        <div style={{ borderTop: "1px solid rgba(30,30,30,0.7)" }}>
+        <div style={{ borderTop: "1px solid rgba(10,10,10,0.08)" }}>
           {SERVICES.map((service, i) => (
             <ServiceRow key={service.index} service={service} index={i} />
           ))}
