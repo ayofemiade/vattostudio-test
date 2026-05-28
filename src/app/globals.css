@@ -11,18 +11,24 @@
 
 :root {
   --font-satoshi: 'Satoshi', 'General Sans', system-ui, -apple-system, sans-serif;
-  --color-bg: #0A0A0A;
-  --color-gold: #C9A84C;
-  --color-white: #FFFFFF;
-  --color-dim: #888880;
-  --color-surface: #1A1A1A;
-  --color-border: #222222;
+  --color-bg:      #0A0A0A;
+  --color-gold:    #C9A84C;
+  --color-gold-dim: rgba(201, 168, 76, 0.35);
+  --color-white:   #FFFFFF;
+  --color-dim:     #888880;
+  --color-surface: #121212;
+  --color-surface-2: #1A1A1A;
+  --color-border:  #1E1E1E;
+  --color-border-mid: #2A2A2A;
 
   --ease-cinematic: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-reveal: cubic-bezier(0.76, 0, 0.24, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-reveal:    cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
 
   --nav-height: 80px;
+  --intro-duration: 2800ms;
 }
 
 /* ============================================================
@@ -70,6 +76,10 @@ body {
   cursor: default;
 }
 
+body.intro-active {
+  overflow: hidden;
+}
+
 /* ============================================================
    TYPOGRAPHY SYSTEM
    ============================================================ */
@@ -87,9 +97,9 @@ body {
 }
 
 /* Display sizes — cinematic scale */
-.text-display-2xl { font-size: clamp(5rem, 14vw, 14rem); line-height: 0.92; }
-.text-display-xl  { font-size: clamp(3.5rem, 10vw, 10rem); line-height: 0.9; }
-.text-display-lg  { font-size: clamp(2.5rem, 6vw, 6rem);  line-height: 0.95; }
+.text-display-2xl { font-size: clamp(5rem, 14vw, 14rem); line-height: 0.88; }
+.text-display-xl  { font-size: clamp(3.5rem, 10vw, 10rem); line-height: 0.88; }
+.text-display-lg  { font-size: clamp(2.5rem, 6vw, 6rem);  line-height: 0.93; }
 .text-display-md  { font-size: clamp(1.75rem, 4vw, 4rem); line-height: 1; }
 
 /* Label style */
@@ -110,26 +120,94 @@ body {
 }
 
 /* ============================================================
-   GRAIN / NOISE OVERLAY
+   GRAIN / NOISE OVERLAY — Cinematic Film Texture
    ============================================================ */
 .grain-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
-  background-size: 128px 128px;
+  background-size: 180px 180px;
   mix-blend-mode: overlay;
+  animation: grain-drift 8s steps(10) infinite;
+}
+
+@keyframes grain-drift {
+  0%  { background-position: 0 0; }
+  10% { background-position: -5% -10%; }
+  20% { background-position: -15% 5%; }
+  30% { background-position: 7% -25%; }
+  40% { background-position: -5% 25%; }
+  50% { background-position: -15% 10%; }
+  60% { background-position: 15% 0%; }
+  70% { background-position: 0% 15%; }
+  80% { background-position: 3% 35%; }
+  90% { background-position: -10% 10%; }
+  100%{ background-position: 0 0; }
+}
+
+/* ============================================================
+   CINEMATIC INTRO
+   ============================================================ */
+.cinematic-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@keyframes intro-char-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes intro-line-sweep {
+  from { scaleX: 0; }
+  to   { scaleX: 1; }
+}
+
+@keyframes intro-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes ambient-breathe {
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50%       { opacity: 0.18; transform: scale(1.06); }
+}
+
+@keyframes gold-sweep {
+  from { transform: translateX(-100%) scaleX(0.5); opacity: 0; }
+  50%  { opacity: 1; }
+  to   { transform: translateX(100vw) scaleX(1); opacity: 0; }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.3)); }
+  50%       { filter: drop-shadow(0 0 24px rgba(201, 168, 76, 0.6)); }
 }
 
 /* ============================================================
    SCROLLBAR STYLING
    ============================================================ */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
 
 /* ============================================================
@@ -175,48 +253,104 @@ a {
   width: 100%;
 }
 
+/* Cinematic gold button fill sweep */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-gold);
+  padding: 1rem 2rem;
+  border: 1px solid var(--color-gold);
+  transition: color 0.45s var(--ease-cinematic);
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  transform: translateX(-101%);
+  transition: transform 0.5s var(--ease-reveal);
+}
+
+.btn-gold:hover::before { transform: translateX(0); }
+.btn-gold:hover { color: var(--color-gold); }
+.btn-gold span { position: relative; z-index: 1; }
+
 /* ============================================================
    SECTION SPACING
    ============================================================ */
 .section-padding {
-  padding: 8rem 0;
+  padding: 9rem 0;
 }
 
 @media (max-width: 768px) {
   .section-padding {
-    padding: 5rem 0;
+    padding: 5.5rem 0;
   }
+}
+
+/* Section atmospheric separator */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-border-mid) 20%,
+    var(--color-border-mid) 80%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
+   AMBIENT GLOW UTILITIES
+   ============================================================ */
+.ambient-glow-gold {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: ambient-breathe 6s ease-in-out infinite;
 }
 
 /* ============================================================
    CURSOR
    ============================================================ */
 .cursor-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--color-gold);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background 0.2s;
+  transition: width 0.2s, height 0.2s;
   mix-blend-mode: difference;
 }
 
 .cursor-ring {
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(201, 168, 76, 0.4);
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(201, 168, 76, 0.45);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width 0.4s var(--ease-cinematic),
-              height 0.4s var(--ease-cinematic),
-              border-color 0.3s,
-              opacity 0.3s;
+  transition:
+    width 0.4s var(--ease-cinematic),
+    height 0.4s var(--ease-cinematic),
+    border-color 0.3s,
+    opacity 0.3s;
 }
 
 /* ============================================================
@@ -236,10 +370,10 @@ a {
 }
 
 .nav-root.nav-scrolled {
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  border-bottom: 1px solid rgba(34, 34, 34, 0.8);
+  background: rgba(10, 10, 10, 0.88);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border-bottom: 1px solid rgba(30, 30, 30, 0.9);
 }
 
 .nav-logo-mark {
@@ -262,6 +396,7 @@ a {
   color: var(--color-dim);
   transition: color 0.3s var(--ease-cinematic);
   position: relative;
+  padding: 0.25rem 0;
 }
 
 .nav-link::after {
@@ -287,25 +422,69 @@ a {
 .mobile-menu {
   position: fixed;
   inset: 0;
-  background: var(--color-bg);
+  background: #070707;
   z-index: 999;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 2rem;
+  overflow: hidden;
+}
+
+.mobile-menu::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.mobile-menu::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  height: 60vh;
+  background: radial-gradient(ellipse at 50% 100%, rgba(201, 168, 76, 0.08) 0%, transparent 65%);
+  pointer-events: none;
 }
 
 .mobile-menu-link {
   font-family: var(--font-bebas);
-  font-size: clamp(3rem, 12vw, 6rem);
-  letter-spacing: 0.05em;
+  font-size: clamp(3rem, 13vw, 7rem);
+  letter-spacing: 0.03em;
   color: var(--color-white);
-  line-height: 1.1;
+  line-height: 1.05;
   transition: color 0.3s var(--ease-cinematic);
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  position: relative;
+}
+
+.mobile-menu-link-num {
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  color: var(--color-gold);
+  opacity: 0.7;
+  align-self: center;
+  position: relative;
+  top: -4px;
 }
 
 .mobile-menu-link:hover {
   color: var(--color-gold);
+}
+
+.mobile-menu-link:hover .mobile-menu-link-num {
+  opacity: 1;
 }
 
 /* Hamburger */
@@ -321,10 +500,16 @@ a {
   width: 24px;
   height: 1px;
   background: var(--color-white);
-  transition: transform 0.4s var(--ease-cinematic),
-              opacity 0.3s var(--ease-cinematic),
-              width 0.4s var(--ease-cinematic);
+  transition:
+    transform 0.4s var(--ease-cinematic),
+    opacity 0.3s var(--ease-cinematic),
+    width 0.4s var(--ease-cinematic),
+    background 0.3s var(--ease-cinematic);
   transform-origin: center;
+}
+
+.hamburger:hover .hamburger-line {
+  background: var(--color-gold);
 }
 
 .hamburger.open .hamburger-line:nth-child(1) {
@@ -336,4 +521,93 @@ a {
 }
 .hamburger.open .hamburger-line:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ============================================================
+   PORTFOLIO CARDS
+   ============================================================ */
+.work-card-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-cinematic);
+}
+
+.work-card-inner {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* ============================================================
+   WHATSAPP FLOATING CTA
+   ============================================================ */
+.whatsapp-cta {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.375rem;
+  border-radius: 50px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: var(--color-white);
+  cursor: pointer;
+  transition:
+    background 0.4s var(--ease-cinematic),
+    border-color 0.4s var(--ease-cinematic),
+    transform 0.3s var(--ease-spring),
+    box-shadow 0.4s var(--ease-cinematic);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.whatsapp-cta:hover {
+  background: #1A2918;
+  border-color: rgba(37, 211, 102, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(37, 211, 102, 0.2);
+}
+
+@keyframes whatsapp-pulse {
+  0%   { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.3); }
+  70%  { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 12px rgba(37,211,102,0); }
+  100% { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0); }
+}
+
+.whatsapp-cta.pulsing {
+  animation: whatsapp-pulse 2s ease-out;
+}
+
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(to right, var(--color-gold), rgba(201, 168, 76, 0.4));
+  transform-origin: left;
+  z-index: 1001;
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay {
+    animation: none;
+  }
+  
+  .ambient-glow-gold {
+    animation: none;
+  }
+  
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

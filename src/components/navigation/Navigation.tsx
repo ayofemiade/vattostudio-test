@@ -6,32 +6,33 @@ import { Magnetic } from "@/components/ui/Magnetic";
 
 /* ─── Navigation links ─── */
 const NAV_LINKS = [
-  { label: "Work",     href: "#portfolio" },
-  { label: "Services", href: "#services"  },
-  { label: "About",    href: "#about"     },
-  { label: "Contact",  href: "#contact"   },
+  { label: "Work",     href: "#portfolio", num: "01" },
+  { label: "Services", href: "#services",  num: "02" },
+  { label: "About",    href: "#about",     num: "03" },
+  { label: "Contact",  href: "#contact",   num: "04" },
 ];
 
 /* ─── Animation variants ─── */
 const mobileMenuVariants = {
   closed: {
     clipPath: "inset(0 0 100% 0)",
-    transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] },
+    transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] },
   },
   open: {
     clipPath: "inset(0 0 0% 0)",
-    transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] },
+    transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] },
   },
 };
 
 const mobileLinkVariants = {
-  closed: { y: 60, opacity: 0 },
+  closed: { y: 80, opacity: 0, skewX: 4 },
   open: (i: number) => ({
     y: 0,
     opacity: 1,
+    skewX: 0,
     transition: {
-      delay: 0.25 + i * 0.07,
-      duration: 0.6,
+      delay: 0.2 + i * 0.08,
+      duration: 0.7,
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   }),
@@ -42,39 +43,38 @@ const mobileMetaVariants = {
   open: {
     opacity: 1,
     y: 0,
-    transition: { delay: 0.65, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { delay: 0.6, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 };
 
 /* ─── Logo Mark SVG ─── */
-function VattoLogoMark() {
+function VattoLogoMark({ glowing = false }: { glowing?: boolean }) {
   return (
-    <svg
-      width="32"
-      height="32"
+    <motion.svg
+      width="28"
+      height="28"
       viewBox="0 0 32 32"
       fill="none"
       aria-hidden="true"
       className="shrink-0"
+      animate={{
+        filter: glowing
+          ? "drop-shadow(0 0 10px rgba(201,168,76,0.7))"
+          : "drop-shadow(0 0 0px rgba(201,168,76,0))",
+      }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      {/* Abstract V shape — minimal, geometric */}
       <polygon
         points="2,4 16,28 30,4 26,4 16,21 6,4"
         fill="#C9A84C"
         style={{ transition: "fill 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
       />
-    </svg>
+    </motion.svg>
   );
 }
 
 /* ─── Hamburger Icon ─── */
-function Hamburger({
-  isOpen,
-  onClick,
-}: {
-  isOpen: boolean;
-  onClick: () => void;
-}) {
+function Hamburger({ isOpen, onClick }: { isOpen: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -96,8 +96,8 @@ function DesktopNavLink({
   label,
   onClick,
 }: {
-  href: string;
-  label: string;
+  href:    string;
+  label:   string;
   onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
@@ -111,14 +111,15 @@ function DesktopNavLink({
    MAIN NAVIGATION COMPONENT
    ═══════════════════════════════════════════ */
 export function Navigation() {
-  const [scrolled, setScrolled]     = useState(false);
-  const [menuOpen, setMenuOpen]     = useState(false);
-  const [hidden, setHidden]         = useState(false);
-  const prefersReducedMotion        = useReducedMotion();
-  const lastScrollY                 = useRef(0);
-  const scrollTimer                 = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [scrolled,  setScrolled]  = useState(false);
+  const [menuOpen,  setMenuOpen]  = useState(false);
+  const [hidden,    setHidden]    = useState(false);
+  const [logoHover, setLogoHover] = useState(false);
+  const prefersReducedMotion      = useReducedMotion();
+  const lastScrollY               = useRef(0);
+  const scrollTimer               = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /* Scroll detection — hide on scroll down, show on scroll up */
+  /* Scroll detection */
   const handleScroll = useCallback(() => {
     const currentY = window.scrollY;
 
@@ -132,7 +133,6 @@ export function Navigation() {
 
     lastScrollY.current = currentY;
 
-    /* Debounce: ensure nav shows after scroll stops */
     if (scrollTimer.current) clearTimeout(scrollTimer.current);
     scrollTimer.current = setTimeout(() => setHidden(false), 800);
   }, []);
@@ -147,24 +147,17 @@ export function Navigation() {
 
   /* Lock body scroll when mobile menu open */
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  /* Smooth scroll handler */
+  /* Smooth scroll */
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       const href = e.currentTarget.getAttribute("href");
       if (!href?.startsWith("#")) return;
       e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
       setMenuOpen(false);
     },
     []
@@ -176,11 +169,11 @@ export function Navigation() {
       <motion.header
         className={`nav-root ${scrolled ? "nav-scrolled" : ""}`}
         animate={{
-          y: hidden && !menuOpen ? -100 : 0,
+          y:       hidden && !menuOpen ? -100 : 0,
           opacity: hidden && !menuOpen ? 0 : 1,
         }}
         transition={{
-          duration: prefersReducedMotion ? 0 : 0.5,
+          duration: prefersReducedMotion ? 0 : 0.55,
           ease: [0.25, 0.46, 0.45, 0.94],
         }}
         role="banner"
@@ -204,11 +197,23 @@ export function Navigation() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             aria-label="Vattostudio — Home"
-            style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.625rem",
+            }}
             data-cursor
+            onMouseEnter={() => setLogoHover(true)}
+            onMouseLeave={() => setLogoHover(false)}
           >
-            <VattoLogoMark />
-            <span className="nav-logo-mark">VATTOSTUDIO</span>
+            <VattoLogoMark glowing={logoHover} />
+            <motion.span
+              className="nav-logo-mark"
+              animate={{ color: logoHover ? "var(--color-gold)" : "var(--color-white)" }}
+              transition={{ duration: 0.3 }}
+            >
+              VATTOSTUDIO
+            </motion.span>
           </a>
 
           {/* Desktop links */}
@@ -232,29 +237,46 @@ export function Navigation() {
               <a
                 href="#contact"
                 onClick={handleNavClick}
-                className="font-mono"
                 data-cursor
                 style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  fontFamily: "var(--font-ibm-plex-mono)",
                   fontSize: "0.6875rem",
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
                   color: "var(--color-bg)",
                   background: "var(--color-gold)",
-                  padding: "0.55rem 1.25rem",
-                  borderRadius: "2px",
-                  transition: "background 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.2s",
-                  display: "inline-block",
+                  padding: "0.6rem 1.4rem",
+                  transition: "color 0.45s var(--ease-cinematic)",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "#dab85a";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+                  const el = e.currentTarget;
+                  const fill = el.querySelector<HTMLElement>("[data-fill]");
+                  if (fill) fill.style.transform = "translateX(0)";
+                  el.style.color = "var(--color-gold)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "var(--color-gold)";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                  const el = e.currentTarget;
+                  const fill = el.querySelector<HTMLElement>("[data-fill]");
+                  if (fill) fill.style.transform = "translateX(-101%)";
+                  el.style.color = "var(--color-bg)";
                 }}
               >
-                Let&apos;s Talk
+                <span
+                  data-fill
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "#0A0A0A",
+                    transform: "translateX(-101%)",
+                    transition: "transform 0.5s cubic-bezier(0.76,0,0.24,1)",
+                  }}
+                />
+                <span style={{ position: "relative", zIndex: 1 }}>Let&apos;s Talk</span>
               </a>
             </Magnetic>
           </nav>
@@ -279,28 +301,54 @@ export function Navigation() {
             aria-modal="true"
             aria-label="Mobile navigation"
           >
-            {/* Close button in top right */}
+            {/* Close button */}
             <div
               style={{
                 position: "absolute",
-                top: "0",
+                top: 0,
                 right: "clamp(1.25rem, 5vw, 3rem)",
                 height: "var(--nav-height)",
                 display: "flex",
                 alignItems: "center",
+                zIndex: 1001,
               }}
             >
               <Hamburger isOpen={true} onClick={() => setMenuOpen(false)} />
             </div>
 
-            {/* Gold accent label */}
+            {/* Logo in top left */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "clamp(1.25rem, 5vw, 3rem)",
+                height: "var(--nav-height)",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.625rem",
+              }}
+            >
+              <VattoLogoMark />
+              <span
+                style={{
+                  fontFamily: "var(--font-bebas)",
+                  fontSize: "1.375rem",
+                  letterSpacing: "0.08em",
+                  color: "var(--color-white)",
+                }}
+              >
+                VATTOSTUDIO
+              </span>
+            </div>
+
+            {/* Gold label */}
             <motion.p
               className="label-gold"
               variants={prefersReducedMotion ? {} : mobileMetaVariants}
               initial="closed"
               animate="open"
               exit="closed"
-              style={{ marginBottom: "3rem" }}
+              style={{ marginBottom: "2rem" }}
             >
               Navigation
             </motion.p>
@@ -309,10 +357,10 @@ export function Navigation() {
             <nav
               role="navigation"
               aria-label="Mobile navigation links"
-              style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+              style={{ display: "flex", flexDirection: "column", gap: "0" }}
             >
               {NAV_LINKS.map((link, i) => (
-                <div key={link.href} style={{ overflow: "hidden" }}>
+                <div key={link.href} style={{ overflow: "hidden", paddingBottom: "0.35rem" }}>
                   <motion.a
                     href={link.href}
                     className="mobile-menu-link"
@@ -322,8 +370,9 @@ export function Navigation() {
                     initial="closed"
                     animate="open"
                     exit="closed"
-                    style={{ display: "block" }}
+                    style={{ display: "flex" }}
                   >
+                    <span className="mobile-menu-link-num">{link.num}</span>
                     {link.label}
                   </motion.a>
                 </div>
@@ -338,25 +387,26 @@ export function Navigation() {
               exit="closed"
               style={{
                 position: "absolute",
-                bottom: "clamp(2rem, 5vh, 3rem)",
+                bottom: "clamp(2rem, 5vh, 3.5rem)",
                 left: "2rem",
                 right: "2rem",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "flex-end",
-                borderTop: "1px solid var(--color-border)",
+                borderTop: "1px solid rgba(30,30,30,0.8)",
                 paddingTop: "1.5rem",
+                zIndex: 1,
               }}
             >
               <div>
-                <p className="label" style={{ marginBottom: "0.25rem" }}>Based in</p>
-                <p style={{ fontFamily: "var(--font-satoshi)", fontSize: "0.875rem", color: "var(--color-white)" }}>
+                <p className="label" style={{ marginBottom: "0.3rem" }}>Based in</p>
+                <p style={{ fontFamily: "var(--font-satoshi)", fontSize: "0.9375rem", color: "var(--color-white)" }}>
                   Lagos, Nigeria
                 </p>
               </div>
               <div style={{ textAlign: "right" }}>
-                <p className="label" style={{ marginBottom: "0.25rem" }}>Est.</p>
-                <p style={{ fontFamily: "var(--font-satoshi)", fontSize: "0.875rem", color: "var(--color-white)" }}>
+                <p className="label" style={{ marginBottom: "0.3rem" }}>Est.</p>
+                <p style={{ fontFamily: "var(--font-satoshi)", fontSize: "0.9375rem", color: "var(--color-white)" }}>
                   2021
                 </p>
               </div>

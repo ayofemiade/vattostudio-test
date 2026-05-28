@@ -85,7 +85,7 @@ function PricingCard({
         border: plan.featured
           ? "1px solid var(--color-gold)"
           : "1px solid var(--color-border)",
-        background: plan.featured ? "var(--color-surface)" : "transparent",
+        background: plan.featured ? "var(--color-bg)" : "transparent",
         display: "flex",
         flexDirection: "column",
         gap: "0",
@@ -278,7 +278,7 @@ export function PricingSection() {
       aria-label="Pricing"
       style={{
         padding: "clamp(5rem, 10vh, 9rem) 0",
-        background: "var(--color-bg)",
+        background: "var(--color-surface)",
         borderTop: "1px solid var(--color-border)",
       }}
     >

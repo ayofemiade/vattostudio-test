@@ -4,11 +4,13 @@ import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { CinematicIntroWrapper } from "@/components/ui/CinematicIntroWrapper";
+import { WhatsAppCTA } from "@/components/ui/WhatsAppCTA";
 
 /* IBM Plex Mono */
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight:  ["300", "400", "500"],
   variable: "--font-ibm-plex-mono",
   display: "swap",
 });
@@ -16,7 +18,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 /* Bebas Neue */
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
-  weight: ["400"],
+  weight:  ["400"],
   variable: "--font-bebas",
   display: "swap",
 });
@@ -32,6 +34,8 @@ export const metadata: Metadata = {
     "brand identity",
     "visual storytelling",
     "Vattostudio",
+    "Lagos",
+    "cinematic",
   ],
   openGraph: {
     title: "Vattostudio — Visual Storytelling Studio",
@@ -70,6 +74,12 @@ export default function RootLayout({
 
         {/* Custom cursor — desktop only */}
         <CustomCursor />
+
+        {/* Cinematic intro — once per session */}
+        <CinematicIntroWrapper />
+
+        {/* Floating WhatsApp CTA */}
+        <WhatsAppCTA />
 
         {/* Smooth scroll wrapper */}
         <SmoothScrollProvider>

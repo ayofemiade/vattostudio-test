@@ -56,7 +56,7 @@ export function ContactSection() {
       style={{
         padding: "clamp(5rem, 10vh, 9rem) 0",
         background: "var(--color-surface)",
-        borderTop: "1px solid var(--color-border)",
+        borderTop: "1px solid rgba(30,30,30,0.7)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -70,7 +70,7 @@ export function ContactSection() {
           right: "-10%",
           width: "60vw",
           height: "60vh",
-          background: "radial-gradient(ellipse, rgba(201,168,76,0.05) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 65%)",
           pointerEvents: "none",
         }}
       />
@@ -379,6 +379,7 @@ export function ContactSection() {
               style={{
                 padding: "1.5rem",
                 border: "1px solid var(--color-border)",
+                background: "var(--color-bg)",
                 borderRadius: "3px",
               }}
             >

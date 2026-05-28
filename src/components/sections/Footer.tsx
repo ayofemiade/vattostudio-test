@@ -1,12 +1,78 @@
 "use client";
 
-import { ArrowUpRight, Instagram, Twitter } from "lucide-react";
+import { useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Instagram, Twitter, LucideIcon } from "lucide-react";
 
+/* ─── Animated Logo Mark ─── */
 function FooterLogoMark() {
   return (
     <svg width="44" height="44" viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <polygon points="2,4 16,28 30,4 26,4 16,21 6,4" fill="#C9A84C" />
     </svg>
+  );
+}
+
+/* ─── Premium Tactile Hover Link ─── */
+function FooterLink({ href, children }: { href: string; children: string }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <a
+      href={href}
+      data-cursor
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "inline-block",
+        fontFamily: "var(--font-satoshi)",
+        fontSize: "clamp(0.875rem, 1.1vw, 0.9375rem)",
+        color: hovered ? "var(--color-white)" : "var(--color-dim)",
+        transform: hovered ? "translateX(6px)" : "translateX(0px)",
+        transition: "all 0.35s var(--ease-cinematic)",
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
+/* ─── Premium Tactile Social Icon Button ─── */
+function SocialIcon({ icon: Icon, href, label }: { icon: LucideIcon; href: string; label: string }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      data-cursor
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: "38px",
+        height: "38px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: `1px solid ${hovered ? "var(--color-gold)" : "var(--color-border)"}`,
+        borderRadius: "50%",
+        color: hovered ? "var(--color-gold)" : "var(--color-dim)",
+        background: hovered ? "rgba(201,168,76,0.06)" : "transparent",
+        boxShadow: hovered ? "0 0 12px rgba(201,168,76,0.12)" : "none",
+        transition: "all 0.4s var(--ease-cinematic)",
+      }}
+    >
+      <Icon
+        size={14}
+        strokeWidth={1.5}
+        style={{
+          transform: hovered ? "scale(1.15)" : "scale(1.0)",
+          transition: "all 0.35s var(--ease-cinematic)",
+        }}
+      />
+    </a>
   );
 }
 
@@ -17,20 +83,59 @@ const FOOTER_LINKS = {
 };
 
 /* ═══════════════════════════════════════════
-   FOOTER
+   FOOTER COMPONENT
    ═══════════════════════════════════════════ */
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear          = new Date().getFullYear();
+  const prefersReducedMotion = useReducedMotion();
+  const [brandHovered, setBrandHovered] = useState(false);
+
+  /* Animation trigger refs */
+  const sectionRef   = useRef<HTMLDivElement>(null);
+  const isInView     = useInView(sectionRef, { once: true, margin: "-8%" });
 
   return (
     <footer
+      ref={sectionRef}
       aria-label="Vattostudio footer"
       style={{
         background: "var(--color-bg)",
-        borderTop: "1px solid var(--color-border)",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
         padding: "clamp(4rem, 8vh, 7rem) 0 0",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      {/* Stage light from below — cinematic floor atmosphere */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          bottom: "-5%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "80vw",
+          height: "50vh",
+          background: "radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.055) 0%, rgba(201,168,76,0.015) 40%, transparent 70%)",
+          pointerEvents: "none",
+          filter: "blur(1px)",
+        }}
+      />
+      
+      {/* Top-left subtle ambient */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "-10%",
+          left: "-5%",
+          width: "40vw",
+          height: "40vh",
+          background: "radial-gradient(ellipse at 0% 0%, rgba(201,168,76,0.025) 0%, transparent 65%)",
+          pointerEvents: "none",
+        }}
+      />
+
       <div
         style={{
           maxWidth: "1440px",
@@ -38,27 +143,24 @@ export function Footer() {
           padding: "0 clamp(1.25rem, 5vw, 3rem)",
         }}
       >
-        {/* Top section: CTA callout */}
-        <div
+        {/* ─── Top section: CTA callout with smooth entry ─── */}
+        <motion.div
+          initial={prefersReducedMotion ? {} : { opacity: 0, y: 35 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.85, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="flex flex-col items-start gap-8 pb-12 border-b border-[rgba(255,255,255,0.06)] md:flex-row md:items-end md:justify-between md:pb-16"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "1.5rem",
             marginBottom: "clamp(4rem, 8vh, 6rem)",
-            paddingBottom: "clamp(3rem, 6vh, 5rem)",
-            borderBottom: "1px solid var(--color-border)",
           }}
-          className="md:flex-row md:items-end md:justify-between"
         >
           <div>
             <p className="label-gold" style={{ marginBottom: "1rem" }}>Ready to Begin?</p>
             <h2
               style={{
                 fontFamily: "var(--font-bebas)",
-                fontSize: "clamp(3rem, 8vw, 7rem)",
+                fontSize: "clamp(3.5rem, 8vw, 7rem)",
                 letterSpacing: "0.01em",
-                lineHeight: 0.9,
+                lineHeight: 0.88,
                 color: "var(--color-white)",
               }}
             >
@@ -67,7 +169,7 @@ export function Footer() {
               <span
                 style={{
                   color: "transparent",
-                  WebkitTextStroke: "1px rgba(255,255,255,0.25)",
+                  WebkitTextStroke: "1px rgba(201,168,76,0.35)",
                 }}
               >
                 Revealed.
@@ -96,7 +198,7 @@ export function Footer() {
               border: "1px solid var(--color-gold)",
               whiteSpace: "nowrap",
               flexShrink: 0,
-              transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              transition: "all 0.4s var(--ease-cinematic)",
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget;
@@ -112,28 +214,41 @@ export function Footer() {
             Start a Project
             <ArrowUpRight size={13} strokeWidth={1.5} />
           </a>
-        </div>
+        </motion.div>
 
-        {/* Middle: link columns + brand */}
-        <div
+        {/* ─── Middle: Link columns + Brand column with grid layout ─── */}
+        <motion.div
+          initial={prefersReducedMotion ? {} : { opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.95, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2.2fr_1fr_1fr_1fr]"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "3rem",
-            marginBottom: "clamp(3rem, 6vh, 5rem)",
+            marginBottom: "clamp(4rem, 8vh, 6.5rem)",
           }}
-          className="md:grid-cols-[2fr_1fr_1fr_1fr]"
         >
-          {/* Brand column */}
-          <div>
+          {/* Brand Column */}
+          <div
+            onMouseEnter={() => setBrandHovered(true)}
+            onMouseLeave={() => setBrandHovered(false)}
+            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}
+          >
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
-              <FooterLogoMark />
+              <div
+                style={{
+                  transform: brandHovered ? "rotate(15deg) scale(1.08)" : "rotate(0deg) scale(1)",
+                  transformOrigin: "center",
+                  transition: "all 0.5s var(--ease-cinematic)",
+                }}
+              >
+                <FooterLogoMark />
+              </div>
               <span
                 style={{
                   fontFamily: "var(--font-bebas)",
                   fontSize: "1.375rem",
                   letterSpacing: "0.08em",
-                  color: "var(--color-white)",
+                  color: brandHovered ? "var(--color-gold)" : "var(--color-white)",
+                  transition: "color 0.4s var(--ease-cinematic)",
                 }}
               >
                 VATTOSTUDIO
@@ -146,54 +261,20 @@ export function Footer() {
                 lineHeight: 1.7,
                 color: "var(--color-dim)",
                 maxWidth: "28ch",
-                marginBottom: "1.5rem",
+                marginBottom: "1.75rem",
               }}
             >
               A creative production studio from Lagos. We reveal the truth in brands.
             </p>
             <div style={{ display: "flex", gap: "1rem" }}>
-              {[
-                { icon: Instagram, label: "Instagram", href: "https://instagram.com/vattostudio" },
-                { icon: Twitter,   label: "X / Twitter", href: "https://twitter.com/vattostudio" },
-              ].map(({ icon: Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  data-cursor
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "50%",
-                    color: "var(--color-dim)",
-                    transition: "all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                  }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget;
-                    el.style.borderColor = "var(--color-gold)";
-                    el.style.color = "var(--color-gold)";
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget;
-                    el.style.borderColor = "var(--color-border)";
-                    el.style.color = "var(--color-dim)";
-                  }}
-                >
-                  <Icon size={14} strokeWidth={1.5} />
-                </a>
-              ))}
+              <SocialIcon icon={Instagram} href="https://instagram.com/vattostudio" label="Instagram" />
+              <SocialIcon icon={Twitter} href="https://twitter.com/vattostudio" label="X / Twitter" />
             </div>
           </div>
 
-          {/* Link columns */}
+          {/* Dynamic Link Columns */}
           {Object.entries(FOOTER_LINKS).map(([category, links]) => (
-            <div key={category}>
+            <div key={category} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
               <p
                 style={{
                   fontFamily: "var(--font-ibm-plex-mono)",
@@ -201,46 +282,27 @@ export function Footer() {
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
                   color: "var(--color-dim)",
-                  marginBottom: "1.25rem",
                 }}
               >
                 {category}
               </p>
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.75rem", padding: 0, margin: 0 }}>
                 {links.map((link) => (
                   <li key={link}>
-                    <a
-                      href="#"
-                      data-cursor
-                      style={{
-                        fontFamily: "var(--font-satoshi)",
-                        fontSize: "0.9375rem",
-                        color: "var(--color-dim)",
-                        transition: "color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                      }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--color-white)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--color-dim)"; }}
-                    >
-                      {link}
-                    </a>
+                    <FooterLink href="#">{link}</FooterLink>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Bottom bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "1.75rem 0",
-            borderTop: "1px solid var(--color-border)",
-            flexWrap: "wrap",
-            gap: "1rem",
-          }}
+        {/* ─── Bottom Bar with perfect horizontal responsive alignment ─── */}
+        <motion.div
+          initial={prefersReducedMotion ? {} : { opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="flex flex-col gap-4 py-8 border-t border-[rgba(255,255,255,0.06)] md:flex-row md:items-center md:justify-between"
         >
           <p
             style={{
@@ -249,6 +311,7 @@ export function Footer() {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
               color: "var(--color-dim)",
+              margin: 0,
             }}
           >
             © {currentYear} Vattostudio · All rights reserved · Lagos, Nigeria
@@ -260,12 +323,13 @@ export function Footer() {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
               color: "var(--color-dim)",
+              margin: 0,
             }}
           >
             We Reveal, Not Invent
             <span style={{ color: "var(--color-gold)", marginLeft: "0.5rem" }}>·</span>
           </p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );
