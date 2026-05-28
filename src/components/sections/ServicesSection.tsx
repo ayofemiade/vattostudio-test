@@ -56,179 +56,262 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
       data-cursor
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        display:         "grid",
-        gridTemplateColumns: "4rem 1fr auto",
-        alignItems:      "center",
-        gap:             "clamp(1.5rem, 3vw, 3.5rem)",
-        padding:         "clamp(2.5rem, 5vh, 4rem) clamp(1rem, 3vw, 2.5rem)",
-        borderBottom:    `1px solid rgba(10,10,10,0.08)`,
-        cursor:          "default",
-        position:        "relative",
-        overflow:        "hidden",
-        transition:      "all 0.6s var(--ease-cinematic)",
-      }}
+      className="relative border-b border-black/[0.08]"
     >
-      {/* ─── Cinematic Background Image Reveal ─── */}
-      <motion.div
-        animate={{
-          opacity: hovered ? 0.85 : 0,
-          scale:   hovered ? 1.05 : 1.0,
-        }}
-        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-        style={{
-          position:      "absolute",
-          inset:         0,
-          zIndex:        0,
-          pointerEvents: "none",
-        }}
-      >
-        <Image
-          src={service.image}
-          alt={service.title}
-          fill
-          sizes="100vw"
-          style={{
-            objectFit: "cover",
-            objectPosition: "center 40%",
-            filter: "grayscale(10%) contrast(1.15) brightness(0.65)",
-          }}
-        />
-      </motion.div>
-
-      {/* Dark overlay with left-to-right gradient to keep text extremely readable */}
-      <motion.div
-        animate={{
-          opacity: hovered ? 1 : 0,
-        }}
-        transition={{ duration: 0.6 }}
-        style={{
-          position:      "absolute",
-          inset:         0,
-          background:    "linear-gradient(to right, rgba(10,10,10,0.96) 0%, rgba(10,10,10,0.75) 45%, rgba(10,10,10,0.15) 100%)",
-          zIndex:        1,
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Subtle hover line highlight at bottom */}
-      <motion.div
-        animate={{ scaleX: hovered ? 1 : 0 }}
-        transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        style={{
-          position:        "absolute",
-          left:            0,
-          right:           0,
-          bottom:          0,
-          height:          "1px",
-          background:      "linear-gradient(to right, transparent, var(--color-gold), transparent)",
-          transformOrigin: "center",
-          zIndex:          2,
-        }}
-      />
-
-      {/* Index */}
-      <span
-        data-index
-        style={{
-          fontFamily:    "var(--font-ibm-plex-mono)",
-          fontSize:      "0.6875rem",
-          letterSpacing: "0.1em",
-          color:         hovered ? "var(--color-gold)" : "rgba(10,10,10,0.4)",
-          paddingTop:    "0.5rem",
-          transition:    "color 0.35s var(--ease-cinematic)",
-          position:      "relative",
-          zIndex:        2,
-        }}
-      >
-        {service.index}
-      </span>
-
-      {/* Content */}
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <h3
-          style={{
-            fontFamily:    "var(--font-bebas)",
-            fontSize:      "clamp(2.25rem, 4.5vw, 4.25rem)",
-            letterSpacing: "0.02em",
-            color:         hovered ? "var(--color-white)" : "var(--color-bg)",
-            lineHeight:    1,
-            marginBottom:  "0.9rem",
-            transform:     hovered ? "translateX(12px)" : "translateX(0px)",
-            transition:    "transform 0.5s var(--ease-cinematic)",
-          }}
-        >
-          {service.title}
-        </h3>
-        <p
-          style={{
-            fontFamily: "var(--font-satoshi)",
-            fontSize:   "clamp(0.875rem, 1.2vw, 1rem)",
-            lineHeight: 1.75,
-            color:      hovered ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.55)",
-            maxWidth:   "54ch",
-            transform:     hovered ? "translateX(12px)" : "translateX(0px)",
-            transition:    "transform 0.5s var(--ease-cinematic), color 0.4s",
-          }}
-        >
-          {service.description}
-        </p>
-      </div>
-
-      {/* Right side: tags + arrow */}
-      <div
-        style={{
-          display:        "flex",
-          flexDirection:  "column",
-          gap:            "0.5rem",
-          alignItems:     "flex-end",
-          paddingTop:     "0.5rem",
-          position:       "relative",
-          zIndex:         2,
-        }}
-        className="hidden md:flex"
-      >
-        {service.tags.map((tag) => (
-          <span
-            key={tag}
+      {/* ══════════════════════════════════════════════
+          MOBILE LAYOUT — Card style: image top, text bottom
+          Hidden on md+ screens
+      ══════════════════════════════════════════════ */}
+      <div className="md:hidden flex flex-col">
+        {/* Mobile image thumbnail — always visible */}
+        <div className="relative w-full overflow-hidden" style={{ height: "200px" }}>
+          <Image
+            src={service.image}
+            alt={service.title}
+            fill
+            sizes="100vw"
             style={{
-              fontFamily:    "var(--font-ibm-plex-mono)",
-              fontSize:      "0.5rem",
+              objectFit: "cover",
+              objectPosition: "center 40%",
+              filter: "grayscale(10%) contrast(1.15) brightness(0.75)",
+            }}
+          />
+          {/* Subtle bottom gradient fade into white section */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.95) 100%)",
+            }}
+          />
+          {/* Index badge */}
+          <span
+            className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.16em] uppercase text-white/80"
+            style={{
+              background: "rgba(10,10,10,0.55)",
+              backdropFilter: "blur(8px)",
+              padding: "0.3rem 0.65rem",
+              borderRadius: "2px",
               letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color:         hovered ? "rgba(201,168,76,0.9)" : "rgba(10,10,10,0.6)",
-              background:    hovered ? "rgba(201,168,76,0.08)" : "rgba(10,10,10,0.03)",
-              border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(10,10,10,0.08)"}`,
-              whiteSpace:    "nowrap",
-              transition:    "all 0.4s var(--ease-cinematic)",
             }}
           >
-            {tag}
+            {service.index}
           </span>
-        ))}
+        </div>
 
-        {/* Arrow indicator */}
+        {/* Mobile text content — clean white area */}
+        <div className="px-5 pt-4 pb-8">
+          <h3
+            className="font-display leading-none mb-3"
+            style={{
+              fontSize: "clamp(2.25rem, 9vw, 3.5rem)",
+              letterSpacing: "0.02em",
+              color: "var(--color-bg)",
+            }}
+          >
+            {service.title}
+          </h3>
+          <p
+            className="font-body text-[14.5px] leading-relaxed mb-5"
+            style={{ color: "rgba(10,10,10,0.6)", maxWidth: "42ch" }}
+          >
+            {service.description}
+          </p>
+          {/* Tags row */}
+          <div className="flex flex-wrap gap-2">
+            {service.tags.map((tag) => (
+              <span
+                key={tag}
+                className="font-mono text-[9px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-[2px]"
+                style={{
+                  color: "rgba(10,10,10,0.55)",
+                  background: "rgba(10,10,10,0.04)",
+                  border: "1px solid rgba(10,10,10,0.08)",
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════
+          DESKTOP LAYOUT — Full-row hover reveal
+          Hidden on mobile (below md)
+      ══════════════════════════════════════════════ */}
+      <div
+        className="hidden md:grid"
+        style={{
+          gridTemplateColumns: "4rem 1fr auto",
+          alignItems:      "center",
+          gap:             "clamp(1.5rem, 3vw, 3.5rem)",
+          padding:         "clamp(2.5rem, 5vh, 4rem) clamp(1rem, 3vw, 2.5rem)",
+          cursor:          "default",
+          position:        "relative",
+          overflow:        "hidden",
+          transition:      "all 0.6s var(--ease-cinematic)",
+        }}
+      >
+        {/* ─── Cinematic Background Image Reveal ─── */}
         <motion.div
           animate={{
-            opacity: hovered ? 1 : 0.35,
-            rotate:  hovered ? 0 : -45,
-            scale:   hovered ? 1.05 : 1,
+            opacity: hovered ? 0.85 : 0,
+            scale:   hovered ? 1.05 : 1.0,
           }}
-          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           style={{
-            marginTop:      "0.5rem",
-            width:          "38px",
-            height:         "38px",
-            borderRadius:   "50%",
-            border:         "1px solid var(--color-gold)",
-            background:     "rgba(201,168,76,0.08)",
-            display:        "flex",
-            alignItems:     "center",
-            justifyContent: "center",
+            position:      "absolute",
+            inset:         0,
+            zIndex:        0,
+            pointerEvents: "none",
           }}
         >
-          <ArrowUpRight size={14} color="var(--color-gold)" strokeWidth={1.5} />
+          <Image
+            src={service.image}
+            alt={service.title}
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center 40%",
+              filter: "grayscale(10%) contrast(1.15) brightness(0.65)",
+            }}
+          />
         </motion.div>
+
+        {/* Dark overlay — left-to-right gradient to preserve text readability */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0 }}
+          transition={{ duration: 0.6 }}
+          style={{
+            position:      "absolute",
+            inset:         0,
+            background:    "linear-gradient(to right, rgba(10,10,10,0.96) 0%, rgba(10,10,10,0.75) 45%, rgba(10,10,10,0.15) 100%)",
+            zIndex:        1,
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Hover line highlight at bottom */}
+        <motion.div
+          animate={{ scaleX: hovered ? 1 : 0 }}
+          transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+          style={{
+            position:        "absolute",
+            left:            0,
+            right:           0,
+            bottom:          0,
+            height:          "1px",
+            background:      "linear-gradient(to right, transparent, var(--color-gold), transparent)",
+            transformOrigin: "center",
+            zIndex:          2,
+          }}
+        />
+
+        {/* Index */}
+        <span
+          data-index
+          style={{
+            fontFamily:    "var(--font-ibm-plex-mono)",
+            fontSize:      "0.6875rem",
+            letterSpacing: "0.1em",
+            color:         hovered ? "var(--color-gold)" : "rgba(10,10,10,0.4)",
+            paddingTop:    "0.5rem",
+            transition:    "color 0.35s var(--ease-cinematic)",
+            position:      "relative",
+            zIndex:        2,
+          }}
+        >
+          {service.index}
+        </span>
+
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <h3
+            style={{
+              fontFamily:    "var(--font-bebas)",
+              fontSize:      "clamp(2.25rem, 4.5vw, 4.25rem)",
+              letterSpacing: "0.02em",
+              color:         hovered ? "var(--color-white)" : "var(--color-bg)",
+              lineHeight:    1,
+              marginBottom:  "0.9rem",
+              transform:     hovered ? "translateX(12px)" : "translateX(0px)",
+              transition:    "transform 0.5s var(--ease-cinematic), color 0.4s",
+            }}
+          >
+            {service.title}
+          </h3>
+          <p
+            style={{
+              fontFamily: "var(--font-satoshi)",
+              fontSize:   "clamp(0.875rem, 1.2vw, 1rem)",
+              lineHeight: 1.75,
+              color:      hovered ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.55)",
+              maxWidth:   "54ch",
+              transform:     hovered ? "translateX(12px)" : "translateX(0px)",
+              transition:    "transform 0.5s var(--ease-cinematic), color 0.4s",
+            }}
+          >
+            {service.description}
+          </p>
+        </div>
+
+        {/* Right side: tags + arrow */}
+        <div
+          style={{
+            display:        "flex",
+            flexDirection:  "column",
+            gap:            "0.5rem",
+            alignItems:     "flex-end",
+            paddingTop:     "0.5rem",
+            position:       "relative",
+            zIndex:         2,
+          }}
+        >
+          {service.tags.map((tag) => (
+            <span
+              key={tag}
+              style={{
+                fontFamily:    "var(--font-ibm-plex-mono)",
+                fontSize:      "0.5rem",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                color:         hovered ? "rgba(201,168,76,0.9)" : "rgba(10,10,10,0.6)",
+                background:    hovered ? "rgba(201,168,76,0.08)" : "rgba(10,10,10,0.03)",
+                border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(10,10,10,0.08)"}`,
+                padding:       "0.25rem 0.5rem",
+                borderRadius:  "2px",
+                whiteSpace:    "nowrap",
+                transition:    "all 0.4s var(--ease-cinematic)",
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+
+          {/* Arrow indicator */}
+          <motion.div
+            animate={{
+              opacity: hovered ? 1 : 0.35,
+              rotate:  hovered ? 0 : -45,
+              scale:   hovered ? 1.05 : 1,
+            }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{
+              marginTop:      "0.5rem",
+              width:          "38px",
+              height:         "38px",
+              borderRadius:   "50%",
+              border:         "1px solid var(--color-gold)",
+              background:     "rgba(201,168,76,0.08)",
+              display:        "flex",
+              alignItems:     "center",
+              justifyContent: "center",
+            }}
+          >
+            <ArrowUpRight size={14} color="var(--color-gold)" strokeWidth={1.5} />
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   );
@@ -247,11 +330,11 @@ export function ServicesSection() {
       id="services"
       aria-label="Our Services"
       style={{
-        padding:  "clamp(6rem, 11vh, 10rem) 0",
-        background: "#FFFFFF",
+        padding:      "clamp(6rem, 11vh, 10rem) 0",
+        background:   "#FFFFFF",
         borderBottom: "1px solid rgba(0,0,0,0.06)",
-        position:   "relative",
-        overflow:   "hidden",
+        position:     "relative",
+        overflow:     "hidden",
       }}
     >
       {/* Atmospheric ambient */}
@@ -278,13 +361,8 @@ export function ServicesSection() {
         {/* Section header */}
         <div
           ref={headingRef}
-          style={{
-            display:             "grid",
-            gridTemplateColumns: "1fr auto",
-            alignItems:          "flex-end",
-            gap:                 "2rem",
-            marginBottom:        "clamp(3.5rem, 7vh, 6rem)",
-          }}
+          className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-end gap-6 md:gap-8"
+          style={{ marginBottom: "clamp(3.5rem, 7vh, 6rem)" }}
         >
           <div>
             <motion.div
@@ -322,7 +400,7 @@ export function ServicesSection() {
             </div>
           </div>
 
-          {/* Right-side sub copy */}
+          {/* Right-side sub copy — desktop only */}
           <motion.p
             initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
             animate={isHeadingInView ? { opacity: 1, y: 0 } : {}}

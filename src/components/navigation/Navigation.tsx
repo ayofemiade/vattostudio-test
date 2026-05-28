@@ -47,6 +47,15 @@ const mobileMetaVariants = {
   },
 };
 
+const mobileCtaVariants = {
+  closed: { opacity: 0, y: 24 },
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.55, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
 /* ─── Logo Mark SVG ─── */
 function VattoLogoMark({ glowing = false }: { glowing?: boolean }) {
   return (
@@ -151,7 +160,7 @@ export function Navigation() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  /* Smooth scroll */
+  /* Smooth scroll + close menu */
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       const href = e.currentTarget.getAttribute("href");
@@ -195,12 +204,15 @@ export function Navigation() {
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
+              setMenuOpen(false);
             }}
             aria-label="Vattostudio — Home"
             style={{
               display: "flex",
               alignItems: "center",
               gap: "0.625rem",
+              /* Prevent logo from wrapping on tiny screens */
+              flexShrink: 0,
             }}
             data-cursor
             onMouseEnter={() => setLogoHover(true)}
@@ -220,7 +232,7 @@ export function Navigation() {
           <nav
             role="navigation"
             aria-label="Primary navigation"
-            style={{ display: "flex", alignItems: "center", gap: "clamp(1.5rem, 3vw, 2.5rem)" }}
+            style={{ alignItems: "center", gap: "clamp(1.5rem, 3vw, 2.5rem)" }}
             className="hidden md:flex"
           >
             {NAV_LINKS.map((link) => (
@@ -281,7 +293,7 @@ export function Navigation() {
             </Magnetic>
           </nav>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger — only visible below md */}
           <div className="flex md:hidden">
             <Hamburger isOpen={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
           </div>
@@ -301,12 +313,12 @@ export function Navigation() {
             aria-modal="true"
             aria-label="Mobile navigation"
           >
-            {/* Close button */}
+            {/* Close button (top-right) */}
             <div
               style={{
                 position: "absolute",
                 top: 0,
-                right: "clamp(1.25rem, 5vw, 3rem)",
+                right: "clamp(1.25rem, 5vw, 2.5rem)",
                 height: "var(--nav-height)",
                 display: "flex",
                 alignItems: "center",
@@ -316,12 +328,12 @@ export function Navigation() {
               <Hamburger isOpen={true} onClick={() => setMenuOpen(false)} />
             </div>
 
-            {/* Logo in top left */}
+            {/* Logo (top-left) */}
             <div
               style={{
                 position: "absolute",
                 top: 0,
-                left: "clamp(1.25rem, 5vw, 3rem)",
+                left: "clamp(1.25rem, 5vw, 2.5rem)",
                 height: "var(--nav-height)",
                 display: "flex",
                 alignItems: "center",
@@ -341,45 +353,96 @@ export function Navigation() {
               </span>
             </div>
 
-            {/* Gold label */}
-            <motion.p
-              className="label-gold"
-              variants={prefersReducedMotion ? {} : mobileMetaVariants}
-              initial="closed"
-              animate="open"
-              exit="closed"
-              style={{ marginBottom: "2rem" }}
+            {/* Inner content wrapper — vertically centered between header & footer */}
+            <div
+              style={{
+                paddingTop: "var(--nav-height)",
+                paddingBottom: "8rem",   /* room for the bottom meta bar */
+                display: "flex",
+                flexDirection: "column",
+                gap: "0",
+                width: "100%",
+              }}
             >
-              Navigation
-            </motion.p>
+              {/* Gold eyebrow label */}
+              <motion.p
+                className="label-gold"
+                variants={prefersReducedMotion ? {} : mobileMetaVariants}
+                initial="closed"
+                animate="open"
+                exit="closed"
+                style={{ marginBottom: "1.25rem" }}
+              >
+                Navigation
+              </motion.p>
 
-            {/* Links */}
-            <nav
-              role="navigation"
-              aria-label="Mobile navigation links"
-              style={{ display: "flex", flexDirection: "column", gap: "0" }}
-            >
-              {NAV_LINKS.map((link, i) => (
-                <div key={link.href} style={{ overflow: "hidden", paddingBottom: "0.35rem" }}>
-                  <motion.a
-                    href={link.href}
-                    className="mobile-menu-link"
-                    onClick={handleNavClick}
-                    custom={i}
-                    variants={prefersReducedMotion ? {} : mobileLinkVariants}
-                    initial="closed"
-                    animate="open"
-                    exit="closed"
-                    style={{ display: "flex" }}
-                  >
-                    <span className="mobile-menu-link-num">{link.num}</span>
-                    {link.label}
-                  </motion.a>
-                </div>
-              ))}
-            </nav>
+              {/* Links with hairline separators */}
+              <nav
+                role="navigation"
+                aria-label="Mobile navigation links"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                {NAV_LINKS.map((link, i) => (
+                  <div key={link.href}>
+                    {/* Hairline separator above each link */}
+                    <div className="mobile-menu-link-rule" />
+                    <div style={{ overflow: "hidden", padding: "0.15rem 0" }}>
+                      <motion.a
+                        href={link.href}
+                        className="mobile-menu-link"
+                        onClick={handleNavClick}
+                        custom={i}
+                        variants={prefersReducedMotion ? {} : mobileLinkVariants}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        style={{ display: "flex" }}
+                      >
+                        <span className="mobile-menu-link-num">{link.num}</span>
+                        {link.label}
+                      </motion.a>
+                    </div>
+                  </div>
+                ))}
+                {/* Bottom separator */}
+                <div className="mobile-menu-link-rule" />
+              </nav>
 
-            {/* Bottom meta */}
+              {/* Mobile CTA button — revealed after links */}
+              <motion.div
+                variants={prefersReducedMotion ? {} : mobileCtaVariants}
+                initial="closed"
+                animate="open"
+                exit="closed"
+                style={{ marginTop: "2.5rem" }}
+              >
+                <a
+                  href="#contact"
+                  onClick={handleNavClick}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "var(--font-ibm-plex-mono)",
+                    fontSize: "0.6875rem",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "var(--color-bg)",
+                    background: "var(--color-gold)",
+                    padding: "1rem 2.5rem",
+                    borderRadius: "2px",
+                    width: "100%",
+                    maxWidth: "280px",
+                    fontWeight: 700,
+                    transition: "opacity 0.3s",
+                  }}
+                >
+                  Start a Project
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Bottom meta strip */}
             <motion.div
               variants={prefersReducedMotion ? {} : mobileMetaVariants}
               initial="closed"
@@ -387,14 +450,14 @@ export function Navigation() {
               exit="closed"
               style={{
                 position: "absolute",
-                bottom: "clamp(2rem, 5vh, 3.5rem)",
-                left: "2rem",
-                right: "2rem",
+                bottom: "clamp(1.5rem, 4vh, 3rem)",
+                left: "clamp(1.25rem, 5vw, 2.5rem)",
+                right: "clamp(1.25rem, 5vw, 2.5rem)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "flex-end",
                 borderTop: "1px solid rgba(30,30,30,0.8)",
-                paddingTop: "1.5rem",
+                paddingTop: "1.25rem",
                 zIndex: 1,
               }}
             >
