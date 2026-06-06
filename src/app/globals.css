@@ -27,7 +27,7 @@
   --ease-in-expo:   cubic-bezier(0.7, 0, 0.84, 0);
   --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  --nav-height: 80px;
+  --nav-height: 108px;
   --intro-duration: 2800ms;
 }
 

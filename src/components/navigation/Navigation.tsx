@@ -56,29 +56,36 @@ const mobileCtaVariants = {
   },
 };
 
-/* ─── Logo Mark SVG ─── */
-function VattoLogoMark({ glowing = false }: { glowing?: boolean }) {
+/* ─── Logo Image ─── */
+function VattoLogoMark({
+  glowing = false,
+  height = 56,
+}: {
+  glowing?: boolean;
+  height?: number;
+}) {
   return (
-    <motion.svg
-      width="28"
-      height="28"
-      viewBox="0 0 32 32"
-      fill="none"
-      aria-hidden="true"
+    <motion.div
       className="shrink-0"
+      style={{ display: "flex", alignItems: "center", flexShrink: 0 }}
       animate={{
         filter: glowing
-          ? "drop-shadow(0 0 10px rgba(201,168,76,0.7))"
+          ? "drop-shadow(0 0 14px rgba(201,168,76,0.75))"
           : "drop-shadow(0 0 0px rgba(201,168,76,0))",
       }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <polygon
-        points="2,4 16,28 30,4 26,4 16,21 6,4"
-        fill="#C9A84C"
-        style={{ transition: "fill 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo-gold.png"
+        alt="Vattostudio logo"
+        style={{
+          height: `${height}px`,
+          width: "auto",
+          display: "block",
+        }}
       />
-    </motion.svg>
+    </motion.div>
   );
 }
 
@@ -218,14 +225,7 @@ export function Navigation() {
             onMouseEnter={() => setLogoHover(true)}
             onMouseLeave={() => setLogoHover(false)}
           >
-            <VattoLogoMark glowing={logoHover} />
-            <motion.span
-              className="nav-logo-mark"
-              animate={{ color: logoHover ? "var(--color-gold)" : "var(--color-white)" }}
-              transition={{ duration: 0.3 }}
-            >
-              VATTOSTUDIO
-            </motion.span>
+            <VattoLogoMark glowing={logoHover} height={86} />
           </a>
 
           {/* Desktop links */}
@@ -340,17 +340,7 @@ export function Navigation() {
                 gap: "0.625rem",
               }}
             >
-              <VattoLogoMark />
-              <span
-                style={{
-                  fontFamily: "var(--font-bebas)",
-                  fontSize: "1.375rem",
-                  letterSpacing: "0.08em",
-                  color: "var(--color-white)",
-                }}
-              >
-                VATTOSTUDIO
-              </span>
+              <VattoLogoMark height={44} />
             </div>
 
             {/* Inner content wrapper — vertically centered between header & footer */}
