@@ -408,7 +408,7 @@ export function HeroSection() {
           width: "100%",
           maxWidth: "1440px",
           margin: "0 auto",
-          padding: "calc(var(--nav-height) + clamp(3rem, 8vh, 6rem)) clamp(1.25rem, 5vw, 3rem) clamp(7rem, 12vh, 10rem)",
+          padding: "calc(var(--nav-height) + clamp(1.5rem, 3vh, 3rem)) clamp(1.25rem, 5vw, 3rem) clamp(9rem, 15vh, 14rem)",
           y: textY,
           opacity: textOpacity,
           scale: textScale,
@@ -421,7 +421,7 @@ export function HeroSection() {
           custom={d + 0.2}
           initial="hidden"
           animate="visible"
-          style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "clamp(2rem, 4vh, 3.5rem)" }}
+          style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "clamp(1.5rem, 3vh, 2.5rem)" }}
         >
           <motion.span
             initial={{ scaleX: 0 }}
@@ -439,7 +439,7 @@ export function HeroSection() {
             fontFamily: "var(--font-bebas)",
             letterSpacing: "0.01em",
             color: "var(--color-white)",
-            marginBottom: "clamp(2rem, 3.5vh, 3rem)",
+            marginBottom: "clamp(1.5rem, 2.5vh, 2.25rem)",
           }}
         >
           {/* 
@@ -514,7 +514,7 @@ export function HeroSection() {
             lineHeight: 1.72,
             color: "var(--color-dim)",
             maxWidth: "52ch",
-            marginBottom: "clamp(2.5rem, 5vh, 4rem)",
+            marginBottom: "clamp(2rem, 4vh, 3rem)",
           }}
         >
           Most brands talk about what they do. The best ones talk about why they exist.

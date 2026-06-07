@@ -6,9 +6,9 @@ import { Magnetic } from "@/components/ui/Magnetic";
 
 /* ─── Navigation links ─── */
 const NAV_LINKS = [
-  { label: "Work",     href: "#portfolio", num: "01" },
+  { label: "About",    href: "#about",     num: "01" },
   { label: "Services", href: "#services",  num: "02" },
-  { label: "About",    href: "#about",     num: "03" },
+  { label: "Work",     href: "#portfolio", num: "03" },
   { label: "Contact",  href: "#contact",   num: "04" },
 ];
 
