@@ -8,31 +8,27 @@ import Image from "next/image";
 const SERVICES = [
   {
     index:       "01",
-    title:       "Brand Identity",
-    description: "We excavate the soul of your brand — then craft visual systems that communicate it with precision. Logos, color, type, motion language.",
-    tags:        ["Strategy", "Visual Identity", "Systems"],
+    title:       "Story Discovery",
+    description: "You might know your story. You might not. Either way, we sit down and figure out what makes your brand tick — your journey, your values, the problem you solved, the 'why' behind everything you do. Then we shape it into something that resonates.",
+    tagline:     "This is for brands who need clarity before content.",
+    tags:        ["Clarity", "Strategy", "Narrative"],
     image:       "/brand_identity.png",
   },
   {
     index:       "02",
-    title:       "Campaign Production",
-    description: "From concept to final asset. Stills, motion, digital — produced with editorial restraint and commercial effectiveness.",
-    tags:        ["Photography", "Videography", "Direction"],
+    title:       "Video Production",
+    description: "Once we've got your story locked, we produce it. Motion graphics, interviews, cinematic storytelling — whatever format brings your origin to life. Clean. Professional. Real.",
+    tagline:     "This is for brands who already know their story and need it brought to life.",
+    tags:        ["Cinematic", "Production", "Motion"],
     image:       "/campaign_production.png",
   },
   {
     index:       "03",
-    title:       "Motion & Film",
-    description: "Moving image work that speaks before a single word is read. Brand films, social content, and cinematic edits.",
-    tags:        ["Brand Film", "Social Content", "Post-Production"],
+    title:       "Full Package",
+    description: "Don't know where to start? We handle it all — from discovery to final edit. You tell us your brand exists. We do the rest. One hero origin video plus four supporting story videos, delivered in three to four weeks.",
+    tagline:     "This is our most complete offer. Everything in one place.",
+    tags:        ["Discovery + Video", "Turnkey", "3-4 Weeks"],
     image:       "/motion_film.png",
-  },
-  {
-    index:       "04",
-    title:       "Digital Experience",
-    description: "Web presence built around intentional design. Sites that feel like the brand — not like a template.",
-    tags:        ["Web Design", "UI/UX", "Development"],
-    image:       "/digital_experience.png",
   },
 ];
 
@@ -56,7 +52,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
       data-cursor
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative border-b border-black/[0.08]"
+      className="relative border-b border-white/[0.08]"
     >
       {/* ══════════════════════════════════════════════
           MOBILE LAYOUT — Card style: image top, text bottom
@@ -80,7 +76,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.95) 100%)",
+              background: "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(10,10,10,0.95) 100%)",
             }}
           />
           {/* Index badge */}
@@ -98,24 +94,29 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
           </span>
         </div>
 
-        {/* Mobile text content — clean white area */}
+        {/* Mobile text content — clean dark area */}
         <div className="px-5 pt-4 pb-8">
           <h3
             className="font-display leading-none mb-3"
             style={{
               fontSize: "clamp(2.25rem, 9vw, 3.5rem)",
               letterSpacing: "0.02em",
-              color: "var(--color-bg)",
+              color: "var(--color-white)",
             }}
           >
             {service.title}
           </h3>
           <p
-            className="font-body text-[14.5px] leading-relaxed mb-5"
-            style={{ color: "rgba(10,10,10,0.6)", maxWidth: "42ch" }}
+            className="font-body text-[14.5px] leading-relaxed mb-4"
+            style={{ color: "rgba(255,255,255,0.6)", maxWidth: "42ch" }}
           >
             {service.description}
           </p>
+          {service.tagline && (
+            <p className="font-body text-[13px] italic mb-5" style={{ color: "var(--color-gold)" }}>
+              {service.tagline}
+            </p>
+          )}
           {/* Tags row */}
           <div className="flex flex-wrap gap-2">
             {service.tags.map((tag) => (
@@ -123,9 +124,9 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
                 key={tag}
                 className="font-mono text-[9px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-[2px]"
                 style={{
-                  color: "rgba(10,10,10,0.55)",
-                  background: "rgba(10,10,10,0.04)",
-                  border: "1px solid rgba(10,10,10,0.08)",
+                  color: "rgba(255,255,255,0.55)",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
                 }}
               >
                 {tag}
@@ -215,7 +216,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
             fontFamily:    "var(--font-ibm-plex-mono)",
             fontSize:      "0.6875rem",
             letterSpacing: "0.1em",
-            color:         hovered ? "var(--color-gold)" : "rgba(10,10,10,0.4)",
+            color:         hovered ? "var(--color-gold)" : "rgba(255,255,255,0.3)",
             paddingTop:    "0.5rem",
             transition:    "color 0.35s var(--ease-cinematic)",
             position:      "relative",
@@ -232,7 +233,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
               fontFamily:    "var(--font-bebas)",
               fontSize:      "clamp(2.25rem, 4.5vw, 4.25rem)",
               letterSpacing: "0.02em",
-              color:         hovered ? "var(--color-white)" : "var(--color-bg)",
+              color:         hovered ? "var(--color-white)" : "rgba(255,255,255,0.95)",
               lineHeight:    1,
               marginBottom:  "0.9rem",
               transform:     hovered ? "translateX(12px)" : "translateX(0px)",
@@ -246,7 +247,7 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
               fontFamily: "var(--font-satoshi)",
               fontSize:   "clamp(0.875rem, 1.2vw, 1rem)",
               lineHeight: 1.75,
-              color:      hovered ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.55)",
+              color:      hovered ? "rgba(255,255,255,0.78)" : "rgba(255,255,255,0.55)",
               maxWidth:   "54ch",
               transform:     hovered ? "translateX(12px)" : "translateX(0px)",
               transition:    "transform 0.5s var(--ease-cinematic), color 0.4s",
@@ -254,18 +255,34 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
           >
             {service.description}
           </p>
+          {service.tagline && (
+            <p
+              style={{
+                fontFamily: "var(--font-satoshi)",
+                fontSize:   "clamp(0.8rem, 1.1vw, 0.9rem)",
+                lineHeight: 1.7,
+                color:      "var(--color-gold)",
+                fontStyle:  "italic",
+                marginTop:  "0.65rem",
+                transform:  hovered ? "translateX(12px)" : "translateX(0px)",
+                transition: "transform 0.5s var(--ease-cinematic)",
+              }}
+            >
+              {service.tagline}
+            </p>
+          )}
         </div>
 
         {/* Right side: tags + arrow */}
         <div
           style={{
-            display:        "flex",
-            flexDirection:  "column",
-            gap:            "0.5rem",
-            alignItems:     "flex-end",
-            paddingTop:     "0.5rem",
-            position:       "relative",
-            zIndex:         2,
+            display:         "flex",
+            flexDirection:   "column",
+            gap:             "0.5rem",
+            alignItems:      "flex-end",
+            paddingTop:      "0.5rem",
+            position:        "relative",
+            zIndex:          2,
           }}
         >
           {service.tags.map((tag) => (
@@ -276,9 +293,9 @@ function ServiceRow({ service, index }: { service: typeof SERVICES[0]; index: nu
                 fontSize:      "0.5rem",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
-                color:         hovered ? "rgba(201,168,76,0.9)" : "rgba(10,10,10,0.6)",
-                background:    hovered ? "rgba(201,168,76,0.08)" : "rgba(10,10,10,0.03)",
-                border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(10,10,10,0.08)"}`,
+                color:         hovered ? "rgba(201,168,76,0.9)" : "rgba(255,255,255,0.5)",
+                background:    hovered ? "rgba(201,168,76,0.08)" : "rgba(255,255,255,0.04)",
+                border:        `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(255,255,255,0.08)"}`,
                 padding:       "0.25rem 0.5rem",
                 borderRadius:  "2px",
                 whiteSpace:    "nowrap",
@@ -328,11 +345,11 @@ export function ServicesSection() {
   return (
     <section
       id="services"
-      aria-label="Our Services"
+      aria-label="Our Offers"
       style={{
         padding:      "clamp(6rem, 11vh, 10rem) 0",
-        background:   "#FFFFFF",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
+        background:   "var(--color-bg)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
         position:     "relative",
         overflow:     "hidden",
       }}
@@ -346,7 +363,7 @@ export function ServicesSection() {
           left:          "-5%",
           width:         "45vw",
           height:        "45vh",
-          background:    "radial-gradient(ellipse at 0% 100%, rgba(201,168,76,0.03) 0%, transparent 65%)",
+          background:    "radial-gradient(ellipse at 0% 100%, rgba(201,168,76,0.06) 0%, transparent 65%)",
           pointerEvents: "none",
         }}
       />
@@ -377,7 +394,7 @@ export function ServicesSection() {
                 transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                 style={{ display: "block", width: "28px", height: "1px", background: "var(--color-gold)", transformOrigin: "left" }}
               />
-              <span className="label-gold">What We Create</span>
+              <span className="label-gold">What We Offer</span>
             </motion.div>
 
             <div style={{ overflow: "hidden" }}>
@@ -390,12 +407,12 @@ export function ServicesSection() {
                   fontSize:      "clamp(3rem, 7vw, 6.5rem)",
                   letterSpacing: "0.01em",
                   lineHeight:    0.92,
-                  color:         "var(--color-bg)",
+                  color:         "var(--color-white)",
                 }}
               >
-                Four Disciplines.
+                Every brand
                 <br />
-                <span style={{ color: "var(--color-gold)" }}>One Standard.</span>
+                <span style={{ color: "var(--color-gold)" }}>is different.</span>
               </motion.h2>
             </div>
           </div>
@@ -409,18 +426,18 @@ export function ServicesSection() {
               fontFamily: "var(--font-satoshi)",
               fontSize:   "clamp(0.875rem, 1.1vw, 1rem)",
               lineHeight: 1.75,
-              color:      "rgba(10, 10, 10, 0.6)",
+              color:      "var(--color-dim)",
               maxWidth:   "28ch",
               textAlign:  "right",
             }}
             className="hidden md:block"
           >
-            Every discipline practiced with the same conviction. Work made to last.
+            So we&apos;ve built our offers to meet you where you are.
           </motion.p>
         </div>
 
         {/* Service list */}
-        <div style={{ borderTop: "1px solid rgba(10,10,10,0.08)" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           {SERVICES.map((service, i) => (
             <ServiceRow key={service.index} service={service} index={i} />
           ))}

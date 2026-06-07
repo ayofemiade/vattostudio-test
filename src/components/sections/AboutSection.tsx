@@ -4,26 +4,26 @@ import { useRef, useState } from "react";
 import { motion, useInView, useReducedMotion, useScroll, useVelocity, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 
-const VALUES = [
+const TARGETS = [
   {
     label: "01",
-    title: "Restraint",
-    body:  "We remove before we add. Every element earns its place.",
+    title: "Founders & Owners",
+    body:  "For brand owners and founders who know their brand is more than a logo. We extract your origin story and build an undeniable world around it.",
   },
   {
     label: "02",
-    title: "Honesty",
-    body:  "We don't dress things up. We reveal what's already there.",
+    title: "Marketing Teams",
+    body:  "For marketing teams and managers ready to stop selling features and start telling their truth through cinematic, high-impact video content.",
   },
   {
     label: "03",
-    title: "Precision",
-    body:  "Details make the difference between good and unforgettable.",
+    title: "Growing SMEs",
+    body:  "For small and medium enterprises ready to build authority, scale their presence, and build a community that actually listens.",
   },
   {
     label: "04",
-    title: "Longevity",
-    body:  "We build for years — not trends.",
+    title: "The Bold & Ambitious",
+    body:  "For the rebels and visionaries who refuse to blend into the industry background, ready to assert who they are and be remembered.",
   },
 ];
 
@@ -58,8 +58,8 @@ function ManifestoTicker() {
     <div
       style={{
         overflow:     "hidden",
-        borderTop:    "1px solid rgba(255,255,255,0.06)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderTop:    "1px solid rgba(10,10,10,0.08)",
+        borderBottom: "1px solid rgba(10,10,10,0.08)",
         padding:      "1.125rem 0",
         margin:       "clamp(3.5rem, 7vh, 6rem) 0",
         position:     "relative",
@@ -71,7 +71,7 @@ function ManifestoTicker() {
         style={{
           position:   "absolute",
           inset:      0,
-          background: "linear-gradient(to right, var(--color-bg) 0%, transparent 8%, transparent 92%, var(--color-bg) 100%)",
+          background: "linear-gradient(to right, #FFFFFF 0%, transparent 8%, transparent 92%, #FFFFFF 100%)",
           zIndex:     1,
           pointerEvents: "none",
         }}
@@ -86,13 +86,13 @@ function ManifestoTicker() {
           fontSize:   "clamp(1.25rem, 2.5vw, 2.25rem)",
           letterSpacing: "0.05em",
           color:      "transparent",
-          WebkitTextStroke: "1px rgba(136,136,128,0.35)",
+          WebkitTextStroke: "1px rgba(10,10,10,0.22)",
           gap:        "0",
           skewX:      skewXSpring,
         }}
       >
         {repeated}
-        <span style={{ color: "var(--color-gold)", WebkitTextStroke: "none", opacity: 0.6 }}>
+        <span style={{ color: "var(--color-gold)", WebkitTextStroke: "none", opacity: 0.8 }}>
           &nbsp;·&nbsp;
         </span>
         {repeated}
@@ -101,9 +101,9 @@ function ManifestoTicker() {
   );
 }
 
-/* ─── Premium Value Card with active React-Motion hover reveals ─── */
-function ValueCard({ value, index, isInView }: {
-  value: typeof VALUES[0];
+/* ─── Premium Target Audience Card ─── */
+function AudienceCard({ target, index, isInView }: {
+  target: typeof TARGETS[0];
   index: number;
   isInView: boolean;
 }) {
@@ -119,10 +119,10 @@ function ValueCard({ value, index, isInView }: {
       onMouseLeave={() => setHovered(false)}
       style={{
         padding:    "clamp(1.75rem, 3vw, 2.5rem)",
-        borderTop:  "1px solid rgba(255,255,255,0.06)",
+        borderTop:  "1px solid rgba(10,10,10,0.08)",
         position:   "relative",
         overflow:   "hidden",
-        background: hovered ? "rgba(201,168,76,0.02)" : "transparent",
+        background: hovered ? "rgba(201,168,76,0.03)" : "transparent",
         transition: "background 0.45s var(--ease-cinematic)",
       }}
     >
@@ -156,24 +156,24 @@ function ValueCard({ value, index, isInView }: {
             fontSize:      "0.5625rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color:         hovered ? "var(--color-gold)" : "var(--color-dim)",
+            color:         hovered ? "var(--color-gold)" : "rgba(10,10,10,0.45)",
             transform:     hovered ? "translateX(4px)" : "translateX(0px)",
             transition:    "all 0.4s var(--ease-cinematic)",
             display:       "inline-block",
           }}
         >
-          {value.label}
+          {target.label}
         </span>
         <h3
           style={{
             fontFamily:    "var(--font-bebas)",
             fontSize:      "clamp(1.5rem, 3vw, 2.25rem)",
             letterSpacing: "0.04em",
-            color:         "var(--color-white)",
+            color:         "var(--color-bg)",
             lineHeight:    1,
           }}
         >
-          {value.title}
+          {target.title}
         </h3>
       </div>
 
@@ -182,12 +182,12 @@ function ValueCard({ value, index, isInView }: {
           fontFamily: "var(--font-satoshi)",
           fontSize:   "clamp(0.9rem, 1.2vw, 1rem)",
           lineHeight: 1.7,
-          color:      hovered ? "rgba(255,255,255,0.75)" : "var(--color-dim)",
+          color:      hovered ? "rgba(10,10,10,0.85)" : "rgba(10,10,10,0.6)",
           transform:  hovered ? "translateY(-1px)" : "translateY(0px)",
           transition: "all 0.4s var(--ease-cinematic)",
         }}
       >
-        {value.body}
+        {target.body}
       </p>
     </motion.div>
   );
@@ -209,8 +209,7 @@ export function AboutSection() {
       aria-label="About Vattostudio"
       style={{
         padding:    "clamp(6rem, 11vh, 10rem) 0",
-        background: "var(--color-bg)",
-        borderTop:  "1px solid rgba(255,255,255,0.06)",
+        background: "#FFFFFF",
         position:   "relative",
         overflow:   "hidden",
       }}
@@ -224,7 +223,7 @@ export function AboutSection() {
           right:         "-5%",
           width:         "45vw",
           height:        "45vh",
-          background:    "radial-gradient(ellipse at 100% 0%, rgba(201,168,76,0.04) 0%, transparent 65%)",
+          background:    "radial-gradient(ellipse at 100% 0%, rgba(201,168,76,0.06) 0%, transparent 65%)",
           pointerEvents: "none",
         }}
       />
@@ -274,13 +273,13 @@ export function AboutSection() {
                     fontSize:      "clamp(3.5rem, 7vw, 7rem)",
                     letterSpacing: "0.01em",
                     lineHeight:    0.92,
-                    color:         "var(--color-white)",
+                    color:         "var(--color-bg)",
                   }}
                 >
-                  Built From Lagos.
+                  Here&apos;s How
                   <br />
-                  <span style={{ color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.28)" }}>
-                    Felt Worldwide.
+                  <span style={{ color: "transparent", WebkitTextStroke: "1px rgba(10,10,10,0.28)" }}>
+                    We Work.
                   </span>
                 </motion.h2>
               </div>
@@ -296,7 +295,7 @@ export function AboutSection() {
                 width: "100%",
                 aspectRatio: "16/10",
                 borderRadius: "4px",
-                border: "1px solid rgba(255,255,255,0.06)",
+                border: "1px solid rgba(10,10,10,0.08)",
                 overflow: "hidden",
                 position: "relative",
               }}
@@ -309,7 +308,7 @@ export function AboutSection() {
                 sizes="(max-width: 768px) 100vw, 50vw"
                 style={{
                   objectFit: "cover",
-                  filter: "grayscale(10%) brightness(0.85) contrast(1.1)",
+                  filter: "grayscale(10%) brightness(0.9) contrast(1.05)",
                   transition: "transform 0.8s var(--ease-cinematic)",
                 }}
                 className="group-hover:scale-105"
@@ -318,7 +317,7 @@ export function AboutSection() {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "radial-gradient(circle at center, rgba(201,168,76,0.04) 0%, transparent 70%)",
+                  background: "radial-gradient(circle at center, rgba(201,168,76,0.08) 0%, transparent 70%)",
                   opacity: 0,
                   transition: "opacity 0.6s",
                   pointerEvents: "none",
@@ -338,25 +337,43 @@ export function AboutSection() {
             <p
               style={{
                 fontFamily: "var(--font-satoshi)",
-                fontSize:   "clamp(1rem, 1.4vw, 1.25rem)",
+                fontSize:   "clamp(1.05rem, 1.4vw, 1.25rem)",
                 lineHeight: 1.75,
-                color:      "var(--color-white)",
+                color:      "var(--color-bg)",
               }}
             >
-              Vattostudio is a creative production studio rooted in Lagos, Nigeria.
-              We work with brands that want more than visibility — they want meaning.
+              Vattostudio started with a simple belief: every brand has a story worth telling.
+              Not a mission statement. Not a tagline. A real story — the one about how you started, why you matter, what problem you solved, and what you actually stand for.
             </p>
             <p
               style={{
                 fontFamily: "var(--font-satoshi)",
-                fontSize:   "clamp(0.9rem, 1.2vw, 1.0625rem)",
+                fontSize:   "clamp(0.9375rem, 1.2vw, 1.0625rem)",
                 lineHeight: 1.75,
-                color:      "var(--color-dim)",
+                color:      "rgba(10,10,10,0.65)",
               }}
             >
-              We don&apos;t invent identities. We excavate them. Through deep strategy,
-              precise craft, and cinematic production — we surface what was always true
-              about your brand and build an undeniable world around it.
+              We noticed something. Brands spend money on ads, but nobody&apos;s really listening. You know why? Because they&apos;re selling features instead of telling their truth. Your customers don&apos;t buy what you do — they buy who you are.
+            </p>
+            <p
+              style={{
+                fontFamily: "var(--font-satoshi)",
+                fontSize:   "clamp(0.9375rem, 1.2vw, 1.0625rem)",
+                lineHeight: 1.75,
+                color:      "rgba(10,10,10,0.65)",
+              }}
+            >
+              We help you figure out what that is. Then we turn it into videos that actually stick with people.
+            </p>
+            <p
+              style={{
+                fontFamily: "var(--font-satoshi)",
+                fontSize:   "clamp(0.9375rem, 1.2vw, 1.0625rem)",
+                lineHeight: 1.75,
+                color:      "rgba(10,10,10,0.65)",
+              }}
+            >
+              Whether you already know your origin story or you&apos;re still figuring it out, we work with you to uncover it, shape it, and produce it in a way that makes sense. Motion graphics, documentary-style storytelling, whatever it takes — we build the content that proves who you are.
             </p>
 
             {/* Studio Meta Table */}
@@ -367,7 +384,7 @@ export function AboutSection() {
                 gap:                 "1.5rem 1.25rem",
                 marginTop:           "0.5rem",
                 paddingTop:          "1.75rem",
-                borderTop:           "1px solid rgba(255,255,255,0.06)",
+                borderTop:           "1px solid rgba(10,10,10,0.08)",
               }}
             >
               {[
@@ -383,7 +400,7 @@ export function AboutSection() {
                       fontSize:      "0.5rem",
                       letterSpacing: "0.2em",
                       textTransform: "uppercase",
-                      color:         "var(--color-dim)",
+                      color:         "rgba(10,10,10,0.45)",
                       display:       "block",
                       marginBottom:  "0.35rem",
                     }}
@@ -394,7 +411,7 @@ export function AboutSection() {
                     style={{
                       fontFamily: "var(--font-satoshi)",
                       fontSize:   "0.9375rem",
-                      color:      "var(--color-white)",
+                      color:      "var(--color-bg)",
                     }}
                   >
                     {item.value}
@@ -417,7 +434,7 @@ export function AboutSection() {
           style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}
         >
           <span style={{ display: "block", width: "28px", height: "1px", background: "var(--color-gold)" }} />
-          <span className="label-gold">What We Stand For</span>
+          <span className="label-gold">Who We Work With</span>
         </motion.div>
 
         {/* Asymmetric value bento grid */}
@@ -428,10 +445,10 @@ export function AboutSection() {
             marginTop:           "0",
           }}
         >
-          {VALUES.map((value, i) => (
-            <ValueCard
-              key={value.label}
-              value={value}
+          {TARGETS.map((target, i) => (
+            <AudienceCard
+              key={target.label}
+              target={target}
               index={i}
               isInView={isValuesInView}
             />

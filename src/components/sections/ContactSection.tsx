@@ -108,11 +108,26 @@ export function ContactSection() {
                 color: "var(--color-bg)",
               }}
             >
-              Let&apos;s Make
+              Let&apos;s Talk
               <br />
-              <span style={{ color: "var(--color-gold)" }}>Something Real.</span>
+              <span style={{ color: "var(--color-gold)" }}>About Your Story.</span>
             </motion.h2>
           </div>
+          <motion.p
+            initial={prefersReducedMotion ? {} : { opacity: 0, y: 15 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.25, duration: 0.8 }}
+            style={{
+              fontFamily: "var(--font-satoshi)",
+              fontSize: "clamp(1rem, 1.3vw, 1.15rem)",
+              lineHeight: 1.75,
+              color: "rgba(10, 10, 10, 0.65)",
+              maxWidth: "55ch",
+              marginTop: "2rem",
+            }}
+          >
+            Ready to tell your brand&apos;s real story? We&apos;d love to hear about it. Drop us a line. Tell us about your brand, what you&apos;re struggling with, or where you want to go. We&apos;ll set up a call and figure out if we&apos;re a fit.
+          </motion.p>
         </div>
 
         {/* Two-column: form + info */}
