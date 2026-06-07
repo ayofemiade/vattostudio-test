@@ -635,3 +635,17 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   HERO BACKDROP RESPONSIVE OPACITY
+   ============================================================ */
+.hero-bg-wrapper {
+  opacity: 0.22; /* Lower opacity on mobile to prevent layout text readability issues */
+  transition: opacity 0.8s var(--ease-cinematic);
+}
+
+@media (min-width: 768px) {
+  .hero-bg-wrapper {
+    opacity: 0.72; /* Higher opacity on desktop screens where text is separated to the left */
+  }
+}

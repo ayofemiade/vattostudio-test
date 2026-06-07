@@ -13,6 +13,8 @@ interface RevealMaskProps {
   revealedOpacity?: number;
   /** Image opacity when hidden (outside spotlight) */
   hiddenOpacity?: number;
+  /** Image object-position style */
+  objectPosition?: string;
 }
 
 /* ═══════════════════════════════════════════
@@ -29,6 +31,7 @@ export function RevealMask({
   radius = 180,
   revealedOpacity = 0.75,
   hiddenOpacity = 0.08,
+  objectPosition = "center",
 }: RevealMaskProps) {
   const containerRef    = useRef<HTMLDivElement>(null);
   const maskLayerRef    = useRef<HTMLDivElement>(null);
@@ -149,7 +152,7 @@ export function RevealMask({
           priority
           style={{
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition,
             filter: "grayscale(20%) contrast(1.1)",
           }}
         />
@@ -171,7 +174,7 @@ export function RevealMask({
           priority
           style={{
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition,
             filter: "grayscale(10%) contrast(1.15) brightness(1.05)",
           }}
         />

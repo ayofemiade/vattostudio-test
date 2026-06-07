@@ -43,7 +43,22 @@ export function CinematicIntroWrapper() {
     setShow(false);
   }, []);
 
-  // null (SSR / checking) or false (done) → render nothing
+  // null (SSR / checking) → render a full-screen solid black backdrop to prevent content flash during hydration
+  if (show === null) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "#050505", // Matches var(--color-bg)
+          zIndex: 99999,
+          pointerEvents: "all",
+        }}
+      />
+    );
+  }
+
+  // false (done) → render nothing
   if (show !== true) return null;
 
   return <CinematicIntro onComplete={handleComplete} />;
