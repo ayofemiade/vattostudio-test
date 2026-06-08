@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import { CinematicIntro } from "./CinematicIntro";
 
 /*
@@ -58,8 +59,10 @@ export function CinematicIntroWrapper() {
     );
   }
 
-  // false (done) → render nothing
-  if (show !== true) return null;
-
-  return <CinematicIntro onComplete={handleComplete} />;
+  return (
+    <AnimatePresence>
+      {show && <CinematicIntro onComplete={handleComplete} />}
+    </AnimatePresence>
+  );
 }
+

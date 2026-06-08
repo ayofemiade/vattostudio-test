@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 /* ─── Duration config ─── */
 const INTRO_DURATION = 2800; // ms total
@@ -159,7 +159,6 @@ function IntroGlow() {
      even if something goes wrong with the main timer.
    ═══════════════════════════════════════════ */
 export function CinematicIntro({ onComplete }: { onComplete: () => void }) {
-  const [visible, setVisible]     = useState(true);
   const prefersReducedMotion      = useReducedMotion();
 
   useEffect(() => {
@@ -173,7 +172,6 @@ export function CinematicIntro({ onComplete }: { onComplete: () => void }) {
 
     /* Skip immediately if already played or motion is reduced */
     if (played || prefersReducedMotion) {
-      setVisible(false);
       onComplete();
       return;
     }
@@ -183,7 +181,6 @@ export function CinematicIntro({ onComplete }: { onComplete: () => void }) {
 
     /* Main completion timer */
     const timer = setTimeout(() => {
-      setVisible(false);
       document.body.classList.remove("intro-active");
       try {
         sessionStorage.setItem("vatto-intro-played", "1");
@@ -195,11 +192,9 @@ export function CinematicIntro({ onComplete }: { onComplete: () => void }) {
 
     /*
       Safety fallback: if the main timer somehow fails to fire
-      (edge case: tab throttled, StrictMode double-invoke, etc.)
       this ensures the intro ALWAYS completes within 5s max.
     */
     const safety = setTimeout(() => {
-      setVisible(false);
       document.body.classList.remove("intro-active");
       onComplete();
     }, 5000);
@@ -212,66 +207,57 @@ export function CinematicIntro({ onComplete }: { onComplete: () => void }) {
   }, [onComplete, prefersReducedMotion]);
 
   return (
-    /*
-      AnimatePresence MUST wrap the conditional content — not be
-      inside the conditional — so it can detect the removal and
-      play the exit animation before unmounting.
-    */
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          key="cinematic-intro"
-          className="cinematic-intro"
-          initial={{ opacity: 1 }}
-          exit={{
-            opacity: 0,
-            transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.1 },
-          }}
-          role="progressbar"
-          aria-label="Loading Vattostudio"
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <IntroGrain />
-          <IntroGlow />
-          <GoldSweep />
+    <motion.div
+      key="cinematic-intro"
+      className="cinematic-intro"
+      initial={{ opacity: 1 }}
+      exit={{
+        opacity: 0,
+        transition: { duration: 1.1, ease: [0.76, 0, 0.24, 1] },
+      }}
+      role="progressbar"
+      aria-label="Loading Vattostudio"
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <IntroGrain />
+      <IntroGlow />
+      <GoldSweep />
 
-          <div
-            style={{
-              position:      "relative",
-              zIndex:        2,
-              display:       "flex",
-              flexDirection: "column",
-              alignItems:    "center",
-              gap:           "1.25rem",
-            }}
-          >
-            <IntroLogoMark />
-            <StudioName />
-            <TaglineReveal />
-          </div>
+      <div
+        style={{
+          position:      "relative",
+          zIndex:        2,
+          display:       "flex",
+          flexDirection: "column",
+          alignItems:    "center",
+          gap:           "1.25rem",
+        }}
+      >
+        <IntroLogoMark />
+        <StudioName />
+        <TaglineReveal />
+      </div>
 
-          {/* Bottom progress line */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{
-              delay:    0.2,
-              duration: (INTRO_DURATION - 400) / 1000,
-              ease:     "linear",
-            }}
-            style={{
-              position:        "absolute",
-              bottom:          0,
-              left:            0,
-              right:           0,
-              height:          "1px",
-              background:      "linear-gradient(to right, transparent, rgba(201,168,76,0.4) 40%, rgba(201,168,76,0.7) 70%, transparent)",
-              transformOrigin: "left",
-            }}
-          />
-        </motion.div>
-      )}
-    </AnimatePresence>
+      {/* Bottom progress line */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{
+          delay:    0.2,
+          duration: (INTRO_DURATION - 400) / 1000,
+          ease:     "linear",
+        }}
+        style={{
+          position:        "absolute",
+          bottom:          0,
+          left:            0,
+          right:           0,
+          height:          "1px",
+          background:      "linear-gradient(to right, transparent, rgba(201,168,76,0.4) 40%, rgba(201,168,76,0.7) 70%, transparent)",
+          transformOrigin: "left",
+        }}
+      />
+    </motion.div>
   );
 }
