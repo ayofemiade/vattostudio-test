@@ -41,7 +41,7 @@ function StudioName() {
         fontFamily:   "var(--font-bebas)",
         fontSize:     "clamp(1.75rem, 4vw, 2.5rem)",
         letterSpacing: "0.12em",
-        color:        "white",
+        color:        "var(--color-text-primary)",
         overflow:     "hidden",
       }}
     >
